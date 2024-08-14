@@ -18,13 +18,12 @@ Rectangle {
     width: Constants.width
     height: Constants.height
     visible: true
-
-    color: Constants.backgroundColor
+    color: "#e6e6e6"
     state: "home"
 
     Image {
         id: backgroundImage
-        visible: !(menu.algoScene || menu.appScene)
+        visible: mainWindow.state === "home" ? true : false
         anchors.fill: parent
         source: "qrc:/qtquickplugin/images/template_image.png"
         layer.enabled: false
@@ -37,12 +36,15 @@ Rectangle {
         y: 198
         width: 740
         height: 580
-        visible: backgroundImage.visible
+        visible: mainWindow.state === "home" ? true : false
         color: "#e6e6e6"
         radius: 20
         border.width: 0
         anchors.verticalCenter: parent.verticalCenter
-        focus: menu.visible
+        clip: true
+        focus: mainWindow.state === "home" ? true : false
+        opacity: 0.6
+        layer.smooth: true
         property bool appScene: false
         property bool algoScene: false
         antialiasing: false
@@ -50,30 +52,34 @@ Rectangle {
 
         Keys.onPressed: (event) => {if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape)Qt.quit();}
         DesignEffect {
-            id: designEffect
-            layerBlurRadius: 5
-            backgroundBlurRadius: 0
-            backgroundLayer: backgroundImage
+            id: menuDesignEffect
+            layerBlurRadius: 3
+            // backgroundBlurRadius: 100
+            // backgroundLayer: backgroundImage
             effects: [
                 DesignDropShadow {
                     offsetY: 0.025 * menu.height
                     offsetX: 0.025 * menu.width
                 }
             ]
+            layerBlurVisible: true
         }
     }
 
     ColumnLayout {
-        id: columnLayout
+        id: menuLayout
         width: menu.width
         height: menu.height
-        visible: menu.visible
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 5
         anchors.horizontalCenter: parent.horizontalCenter
-
+        visible: mainWindow.state === "home" ? true : false
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
+        anchors.topMargin: 20
+        anchors.bottomMargin: 20
+        spacing: 20
         ColumnLayout {
-            id: columnLayout1
+            id: infoLayout
             width: 100
             height: 100
             Layout.fillHeight: true
@@ -81,7 +87,7 @@ Rectangle {
             spacing: 0
 
             Text {
-                id: text1
+                id: headerline
                 text: qsTr("《数据结构与算法设计》")
                 font.pixelSize: 70
                 horizontalAlignment: Text.AlignHCenter
@@ -90,42 +96,49 @@ Rectangle {
                 Layout.fillWidth: true
                 font.styleName: "Bold"
                 font.weight: Font.Black
+                Layout.fillHeight: true
                 font.bold: true
             }
 
             Text {
-                id: text2
+                id: subtitle
                 text: qsTr("课程设计")
                 font.pixelSize: 50
+                wrapMode: Text.NoWrap
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 Layout.fillWidth: true
+                Layout.fillHeight: true
                 font.bold: true
             }
 
             Text {
-                id: text8
+                id: authorName
                 text: qsTr("范潇")
                 font.pixelSize: 40
+                wrapMode: Text.NoWrap
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
                 Layout.fillWidth: true
+                Layout.fillHeight: true
             }
 
             Text {
-                id: text4
+                id: studentNumber
                 text: qsTr("2254298")
                 font.pixelSize: 40
+                wrapMode: Text.NoWrap
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
                 Layout.fillWidth: true
+                Layout.fillHeight: true
             }
         }
 
         ColumnLayout {
-            id: columnLayout2
+            id: menuBottonLayout
             width: 100
             height: 100
             Layout.rightMargin: 20
@@ -146,8 +159,6 @@ Rectangle {
                 display: AbstractButton.TextOnly
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                icon.color: "#cdcdcd"
-
                 DesignEffect {
                     effects: [
                         DesignDropShadow {
@@ -167,7 +178,6 @@ Rectangle {
                 id: appScreenButton
                 radius: 20
                 text: "综合应用：社会关系网络"
-                icon.color: "#cdcdcd"
                 font.pointSize: 40
                 font.bold: true
                 display: AbstractButton.TextOnly
@@ -192,7 +202,6 @@ Rectangle {
                 id: quitBotton
                 radius: 20
                 text: "退出"
-                icon.color: "#cdcdcd"
                 font.pointSize: 40
                 font.bold: true
                 display: AbstractButton.TextOnly
@@ -219,7 +228,7 @@ Rectangle {
         id: controlPanel
         y: 903
         height: 100
-        visible: !menu.visible
+        visible:  mainWindow.state === "home" ? false : true
         color: "#cdcdcd"
         border.width: 0
         anchors.left: parent.left
@@ -228,17 +237,10 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
-        focus: controlPanel.visible
-        Keys.onPressed: (event) =>{
-                            if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                menu.algoScene = false
-                                menu.appScene = false
-                            }
-                        }
+        property bool questionOpen: false
         RoundButton {
             id: returnButton
             width: returnButton.height
-            visible: controlPanel.visible
             radius: 10
             palette.button: '#e54a4a'
             text: "返回"
@@ -258,12 +260,18 @@ Rectangle {
                     menu.appScene = false
                 }
             }
+            focus: mainWindow.state === "home" ? false : true
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                    menu.algoScene = false
+                                    menu.appScene = false
+                                }
+                            }
         }
 
         RoundButton {
             id: questionButton
             width: returnButton.width
-            visible: controlPanel.visible
             radius: 10
             text: "?"
             anchors.verticalCenter: parent.verticalCenter
@@ -273,7 +281,6 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            icon.color: "#348562"
             font.italic: false
             icon.width: 30
             palette.button: "#348562"
@@ -282,11 +289,44 @@ Rectangle {
             Connections {
                 target: questionButton
                 onClicked: {
-                            menu.algoScene = false
-                            menu.appScene = false
-                        }
+                    controlPanel.questionOpen = true
+                }
             }
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Question){
+                                    controlPanel.questionOpen = true
+                                }
+                            }
+            focus: mainWindow.state === "home" ? false : true
             activeFocusOnTab: false
+        }
+    }
+
+    Rectangle {
+        id: questionBackground
+        visible: controlPanel.questionOpen
+        color: "#ffffff"
+        border.width: 0
+        anchors.fill: parent
+        opacity: 0.5
+        DesignEffect {
+            id: designEffect1
+            visible: false
+            effects: [
+                DesignDropShadow {
+                }
+            ]
+            backgroundBlurRadius: 20
+            backgroundLayer: mainWindow
+        }
+
+        SwipeView {
+            id: swipeView
+            width: 385
+            height: 717
+            visible: questionBackground.visible
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 
@@ -294,89 +334,25 @@ Rectangle {
         State {
             name: "home"
             when: !menu.algoScene && !menu.appScene
-
             PropertyChanges {
                 target: backgroundImage
-                visible: !(menu.algoScene || menu.appScene)
                 source: "images/home_background.svg"
-            }
-
-            PropertyChanges {
-                target: columnLayout
-                visible: menu.visible
-                anchors.leftMargin: 20
-                anchors.rightMargin: 20
-                anchors.topMargin: 20
-                anchors.bottomMargin: 20
-                spacing: 20
-            }
-
-            PropertyChanges {
-                target: designEffect
-                backgroundLayer: backgroundImage
-                backgroundBlurRadius: 32
-                layerBlurVisible: false
-            }
-
-            PropertyChanges {
-                id: propertyChanges
-                target: menu
-                opacity: 0.597
-                focus: true
-                layer.smooth: false
-            }
-
-            PropertyChanges {
-                target: controlPanel
-                color: "#cdcdcd"
-                focus: false
-            }
-
-            PropertyChanges {
-                target: mainWindow
-                visible: true
             }
         },
         State {
             name: "algo"
             when: menu.algoScene && !menu.appScene
-
-            PropertyChanges {
-                target: returnButton
-                icon.color: "#e54a4a"
-            }
-
-            PropertyChanges {
-                target: controlPanel
-                focus: controlPanel.visible
-            }
-
-            PropertyChanges {
-                target: questionButton
-                visible: controlPanel.visible
-            }
         },
         State {
             name: "app"
             when: !menu.algoScene && menu.appScene
-
-            PropertyChanges {
-                target: controlPanel
-                focus: controlPanel.visible
-            }
-
-            PropertyChanges {
-                target: questionButton
-                visible: controlPanel.visible
-                text: "?"
-            }
         }
     ]
 }
 
 /*##^##
 Designer {
-    D{i:0}D{i:1;invisible:true}D{i:2;invisible:true}D{i:5;invisible:true}
+    D{i:0}D{i:1;invisible:true}D{i:2;invisible:true}D{i:5;invisible:true}D{i:29;invisible:true}
 }
 ##^##*/
 
