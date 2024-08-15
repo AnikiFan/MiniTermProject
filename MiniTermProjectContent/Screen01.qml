@@ -315,6 +315,12 @@ Rectangle {
                                 controlPanel.questionOpen = false
                             }
                         }
+        Keys.onLeftPressed:(event) =>{
+                               if(view.currentIndex > 0) view.currentIndex -=1 ;
+                           }
+        Keys.onRightPressed:(event) =>{
+                               if(view.currentIndex<view.count-1) view.currentIndex +=1 ;
+                           }
         Page {
             id: page
             width: 400
@@ -338,6 +344,7 @@ Rectangle {
             color:'white'
             SwipeView {
                 id: view
+                currentIndex: 1
                 anchors.fill: parent
                    clip: true
                    palette.window: '#dfdfdf'
