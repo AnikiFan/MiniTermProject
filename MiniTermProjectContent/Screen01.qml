@@ -308,25 +308,107 @@ Rectangle {
         color: "#ffffff"
         border.width: 0
         anchors.fill: parent
-        opacity: 0.5
-        DesignEffect {
-            id: designEffect1
-            visible: false
-            effects: [
-                DesignDropShadow {
-                }
-            ]
-            backgroundBlurRadius: 20
-            backgroundLayer: mainWindow
-        }
-
-        SwipeView {
-            id: swipeView
-            width: 385
-            height: 717
-            visible: questionBackground.visible
+        opacity: 0.698
+        focus: controlPanel.questionOpen
+        Keys.onPressed: (event) =>{
+                            if(event.key===Qt.Key_Q||event.key==Qt.Key_Escape){
+                                controlPanel.questionOpen = false
+                            }
+                        }
+        Page {
+            id: page
+            width: 400
+            height: 400
+            palette.window: "#cdcdcd"
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+            header: Label {
+                text: view.currentItem.title
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                horizontalAlignment: Text.AlignHCenter
+                   verticalAlignment: Text.AlignVCenter
+                   font.pointSize: 20
+                   font.bold: true
+                   anchors.horizontalCenterOffset: 0
+                   anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Rectangle{
+            anchors.fill: parent
+            color:'white'
+            SwipeView {
+                id: view
+                anchors.fill: parent
+                   clip: true
+                   palette.window: '#dfdfdf'
+                   // component HelpPage :Page{
+                   //     id: helpPage
+                   //     property  string title: "title"
+                   //     property alias  text   :helpPageText.text
+                   //     Text{
+                   //         id: helpPageText
+                   //         text: "text"
+                   //         anchors.fill: parent
+                   //         horizontalAlignment: Text.AlignHCenter
+                   //         verticalAlignment: Text.AlignTop
+                   //     }
+                   // }
+                   // HelpPage{
+                   //     id: page11
+                   //     title: "Page1"
+                   //     text: "test"
+                   // }
+                   // HelpPage{
+                   //     id: page21
+                   //     title: "Page2"
+                   //     text: "test"
+                   // }
+                   // HelpPage{
+                   //     id: page31
+                   //     title: "Page3"
+                   //     text: "test"
+                   // }
+                   Page {
+                       title: qsTr("Home")
+
+                       Text{
+                           id: text3
+                           text:"test"
+                           anchors.fill: parent
+                           horizontalAlignment: Text.AlignHCenter
+                           verticalAlignment: Text.AlignTop
+                       }
+                   }
+                   Page {
+                       title: qsTr("Discover")
+                       Text{
+                           id: text1
+                           text:"test1"
+                           anchors.fill: parent
+                           horizontalAlignment: Text.AlignHCenter
+                           verticalAlignment: Text.AlignVCenter
+                       }
+                   }
+                   Page {
+                       title: qsTr("Activity")
+                       Text{
+                           id: text2
+                           text:"test2"
+                           anchors.fill: parent
+                           horizontalAlignment: Text.AlignHCenter
+                           verticalAlignment: Text.AlignVCenter
+                       }
+                   }
+               }
+        }
+            PageIndicator {
+                id: indicator
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                count: view.count
+                currentIndex: view.currentIndex
+
+            }
         }
     }
 

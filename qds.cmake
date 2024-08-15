@@ -2,11 +2,11 @@
 ### Do not change
 
 add_subdirectory(QuickQanava)
-add_subdirectory(MiniTermProject)
 add_subdirectory(MiniTermProjectContent)
+add_subdirectory(MiniTermProject)
 add_subdirectory(App)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
 	QuickContainersplugin
-	MiniTermProjectplugin
-	MiniTermProjectContentplugin)
+	MiniTermProjectContentplugin
+	MiniTermProjectplugin)
