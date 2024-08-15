@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtDesignStudio 4.5.1, 2024-08-15T09:45:25. -->
+<!-- Written by QtDesignStudio 4.5.1, 2024-08-15T11:33:59. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{b0b0c416-a582-4a92-9414-2ce629126a9b}</value>
+  <value type="QByteArray">{110a2888-fa92-4a49-a16c-65a218c5ee1c}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -56,14 +56,6 @@
    <value type="bool" key="EditorConfiguration.inEntireDocument">false</value>
    <value type="bool" key="EditorConfiguration.skipTrailingWhitespace">true</value>
    <value type="bool" key="EditorConfiguration.tintMarginArea">true</value>
-  </valuemap>
- </data>
- <data>
-  <variable>ProjectExplorer.Project.PluginSettings</variable>
-  <valuemap type="QVariantMap">
-   <valuemap type="QVariantMap" key="CppEditor.QuickFix">
-    <value type="bool" key="UseGlobalSettings">true</value>
-   </valuemap>
   </valuemap>
  </data>
  <data>

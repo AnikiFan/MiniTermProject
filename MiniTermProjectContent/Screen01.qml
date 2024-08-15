@@ -93,6 +93,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 Layout.fillWidth: true
                 font.styleName: "Bold"
                 font.weight: Font.Black
@@ -105,6 +106,7 @@ Rectangle {
                 text: qsTr("课程设计")
                 font.pixelSize: 50
                 wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 Layout.fillWidth: true
@@ -117,6 +119,7 @@ Rectangle {
                 text: qsTr("范潇")
                 font.pixelSize: 40
                 wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
@@ -129,6 +132,7 @@ Rectangle {
                 text: qsTr("2254298")
                 font.pixelSize: 40
                 wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
@@ -153,7 +157,8 @@ Rectangle {
             RoundButton {
                 id: algoScreenButton
                 radius: 20
-                text: "算法实现：堆的建立和筛选"
+                text: qsTr("算法实现：堆的建立和筛选")
+                font.family: "Microsoft YaHei"
                 font.pointSize: 40
                 font.bold: true
                 display: AbstractButton.TextOnly
@@ -178,6 +183,7 @@ Rectangle {
                 id: appScreenButton
                 radius: 20
                 text: "综合应用：社会关系网络"
+                font.family: "Microsoft YaHei"
                 font.pointSize: 40
                 font.bold: true
                 display: AbstractButton.TextOnly
@@ -202,6 +208,7 @@ Rectangle {
                 id: quitBotton
                 radius: 20
                 text: "退出"
+                font.family: "Microsoft YaHei"
                 font.pointSize: 40
                 font.bold: true
                 display: AbstractButton.TextOnly
@@ -250,6 +257,7 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
+            font.family: "Microsoft YaHei"
             activeFocusOnTab: false
             font.pointSize: 25
             font.bold: true
@@ -281,6 +289,7 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
+            font.family: "Microsoft YaHei"
             font.italic: false
             icon.width: 30
             palette.button: "#348562"
@@ -311,7 +320,7 @@ Rectangle {
         opacity: 0.698
         focus: controlPanel.questionOpen
         Keys.onPressed: (event) =>{
-                            if(event.key===Qt.Key_Q||event.key==Qt.Key_Escape){
+                            if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
                                 controlPanel.questionOpen = false
                             }
                         }
