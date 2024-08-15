@@ -15,8 +15,8 @@ qt6_add_qml_module(MiniTermProject
     RESOURCE_PREFIX "/qt/qml"
 	QML_FILES
 		"EventListSimulator.qml"
-		"DirectoryFontLoader.qml"
 		"Constants.qml"
+		"DirectoryFontLoader.qml"
 		"EventListModel.qml"
 )
 

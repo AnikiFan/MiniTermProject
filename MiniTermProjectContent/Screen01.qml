@@ -316,6 +316,62 @@ Rectangle {
             focus: mainWindow.state === "home" ? false : true
             activeFocusOnTab: false
         }
+
+        RoundButton {
+            id: importButton
+            width: 200
+            radius: 10
+            text: "导入"
+            anchors.right: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+            font.pixelSize: 30
+            palette.button: "#68abd0"
+            font.weight: Font.Black
+            font.family: "Microsoft YaHei"
+            font.bold: true
+            focus: mainWindow.state === "home" ? false : true
+            Connections {
+                target: returnButton1
+                onClicked: {
+                    menu.algoScene = false
+                    menu.appScene = false
+                }
+            }
+            activeFocusOnTab: false
+        }
+
+        RoundButton {
+            id: exportButton
+            width: 200
+            radius: 10
+            text: "导出"
+            anchors.left: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 10
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+            font.pixelSize: 30
+            palette.button: "#68abd0"
+            font.weight: Font.Black
+            font.family: "Microsoft YaHei"
+            font.bold: true
+            focus: mainWindow.state === "home" ? false : true
+            Connections {
+                target: returnButton2
+                onClicked: {
+                            menu.algoScene = false
+                            menu.appScene = false
+                        }
+            }
+            activeFocusOnTab: false
+        }
+
+
     }
 
     Rectangle {
@@ -457,7 +513,8 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0}D{i:1;invisible:true}D{i:2;invisible:true}D{i:5;invisible:true}D{i:29;invisible:true}
+    D{i:0}D{i:1;invisible:true}D{i:2;invisible:true}D{i:5;invisible:true}D{i:29}D{i:31}
+D{i:33;invisible:true}
 }
 ##^##*/
 
