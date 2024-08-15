@@ -20,7 +20,12 @@ Rectangle {
     visible: true
     color: "#e6e6e6"
     state: "home"
-
+    Keys.forwardTo: [menu,questionPage,returnButton,questionButton,heapShower]
+    // Keys.forwardTo:{
+    //     if(mainWindow.state==='home')return[menu]
+    //     else if(controlPanel.questionOpen)return[questionPage]
+    //     else return[controlPanel,heap]
+    // }
     Image {
         id: backgroundImage
         visible: mainWindow.state === "home" ? true : false
@@ -29,7 +34,6 @@ Rectangle {
         layer.enabled: false
         fillMode: Image.Stretch
     }
-
     Rectangle {
         id: menu
         x: 745
@@ -49,8 +53,12 @@ Rectangle {
         property bool algoScene: false
         antialiasing: false
         anchors.horizontalCenter: parent.horizontalCenter
-
-        Keys.onPressed: (event) => {if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape)Qt.quit();}
+        Keys.onPressed: (event) => {if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                Qt.quit();
+                                event.accepted = true;
+                            }
+                            else event.accepted = false;
+                        }
         DesignEffect {
             id: menuDesignEffect
             layerBlurRadius: 3
@@ -237,6 +245,40 @@ Rectangle {
         }
     }
 
+    Item {
+        id:heapShower
+        height: 100
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: controlPanel.top
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        visible: parent.state === 'algo'?true:false
+        focus:parent.state === 'algo'?true:false
+        Keys.onLeftPressed: scrollBar.decrease()
+        Keys.onRightPressed: scrollBar.increase()
+            ListView {
+                id:heap
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 4
+                clip: true
+                model: 100
+                orientation: ListView.Horizontal
+                delegate: Rectangle {
+                    required property int index
+                    width: 80
+                    height: 80
+                    color:"red"
+                    opacity:index/100
+                    Text{
+                        anchors.centerIn: parent
+                        text:index
+                    }
+                }
+                ScrollBar.horizontal: ScrollBar { id: scrollBar }
+            }
+    }
     Rectangle {
         id: controlPanel
         y: 903
@@ -250,6 +292,7 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
+        Keys.forwardTo: [returnButton,questionButton]
         property bool questionOpen: false
         RoundButton {
             id: returnButton
@@ -275,12 +318,14 @@ Rectangle {
                     menu.appScene = false
                 }
             }
-            focus: mainWindow.state === "home" ? false : true
+            focus: mainWindow.state === "home" || controlPanel.questionOpen? false : true
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
                                     menu.algoScene = false
                                     menu.appScene = false
+                                    event.accepted = true
                                 }
+                                else event.accepted = false
                             }
         }
 
@@ -313,7 +358,7 @@ Rectangle {
                                     controlPanel.questionOpen = true
                                 }
                             }
-            focus: mainWindow.state === "home" ? false : true
+            focus: mainWindow.state === "home" || controlPanel.questionOpen? false : true
             activeFocusOnTab: false
         }
 
@@ -333,15 +378,6 @@ Rectangle {
             font.weight: Font.Black
             font.family: "Microsoft YaHei"
             font.bold: true
-            focus: mainWindow.state === "home" ? false : true
-            Connections {
-                target: returnButton1
-                onClicked: {
-                    menu.algoScene = false
-                    menu.appScene = false
-                }
-            }
-            activeFocusOnTab: false
         }
 
         RoundButton {
@@ -360,15 +396,6 @@ Rectangle {
             font.weight: Font.Black
             font.family: "Microsoft YaHei"
             font.bold: true
-            focus: mainWindow.state === "home" ? false : true
-            Connections {
-                target: returnButton2
-                onClicked: {
-                            menu.algoScene = false
-                            menu.appScene = false
-                        }
-            }
-            activeFocusOnTab: false
         }
 
 
@@ -381,20 +408,23 @@ Rectangle {
         border.width: 0
         anchors.fill: parent
         opacity: 0.698
-        focus: controlPanel.questionOpen
-        Keys.onPressed: (event) =>{
-                            if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                controlPanel.questionOpen = false
-                            }
-                        }
-        Keys.onLeftPressed:(event) =>{
-                               if(view.currentIndex > 0) view.currentIndex -=1 ;
-                           }
-        Keys.onRightPressed:(event) =>{
-                               if(view.currentIndex<view.count-1) view.currentIndex +=1 ;
-                           }
+
         Page {
-            id: page
+            id: questionPage
+            focus: controlPanel.questionOpen
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                    controlPanel.questionOpen = false
+                                    event.accepted = true
+                                }
+                                else event.accepted = false
+                            }
+            Keys.onLeftPressed:(event) =>{
+                                   if(view.currentIndex > 0) view.currentIndex -=1 ;
+                               }
+            Keys.onRightPressed:(event) =>{
+                                   if(view.currentIndex<view.count-1) view.currentIndex +=1 ;
+                               }
             width: 400
             height: 400
             palette.window: "#cdcdcd"
@@ -513,8 +543,7 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0}D{i:1;invisible:true}D{i:2;invisible:true}D{i:5;invisible:true}D{i:29}D{i:31}
-D{i:33;invisible:true}
+    D{i:0}D{i:44;invisible:true}
 }
 ##^##*/
 
