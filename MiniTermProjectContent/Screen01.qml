@@ -76,8 +76,7 @@ Rectangle {
         anchors.leftMargin: 20
         anchors.rightMargin: 20
         anchors.topMargin: 20
-        anchors.bottomMargin: 20
-        spacing: 20
+        spacing: 5
         ColumnLayout {
             id: infoLayout
             width: 100
@@ -105,11 +104,13 @@ Rectangle {
                 id: subtitle
                 text: qsTr("课程设计")
                 font.pixelSize: 50
-                wrapMode: Text.NoWrap
-                font.family: "Microsoft YaHei"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 Layout.fillWidth: true
+                font.styleName: "Bold"
+                font.weight: Font.Black
                 Layout.fillHeight: true
                 font.bold: true
             }
@@ -118,33 +119,35 @@ Rectangle {
                 id: authorName
                 text: qsTr("范潇")
                 font.pixelSize: 40
-                wrapMode: Text.NoWrap
-                font.family: "Microsoft YaHei"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                font.bold: true
+                wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 Layout.fillWidth: true
+                font.styleName: "Bold"
+                font.weight: Font.Black
                 Layout.fillHeight: true
+                font.bold: true
             }
 
             Text {
                 id: studentNumber
                 text: qsTr("2254298")
                 font.pixelSize: 40
-                wrapMode: Text.NoWrap
-                font.family: "Microsoft YaHei"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                font.bold: true
+                wrapMode: Text.NoWrap
+                font.family: "Microsoft YaHei"
                 Layout.fillWidth: true
+                font.styleName: "Bold"
+                font.weight: Font.Black
                 Layout.fillHeight: true
+                font.bold: true
             }
         }
 
         ColumnLayout {
             id: menuBottonLayout
-            width: 100
-            height: 100
             Layout.rightMargin: 20
             Layout.leftMargin: 20
             Layout.bottomMargin: 20
@@ -159,8 +162,9 @@ Rectangle {
                 radius: 20
                 text: qsTr("算法实现：堆的建立和筛选")
                 font.family: "Microsoft YaHei"
-                font.pointSize: 40
+                font.pixelSize: 55
                 font.bold: true
+                font.weight: Font.Black
                 display: AbstractButton.TextOnly
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -184,8 +188,9 @@ Rectangle {
                 radius: 20
                 text: "综合应用：社会关系网络"
                 font.family: "Microsoft YaHei"
-                font.pointSize: 40
+                font.pixelSize: 55
                 font.bold: true
+                font.weight: Font.Black
                 display: AbstractButton.TextOnly
                 DesignEffect {
                     effects: [
@@ -209,8 +214,9 @@ Rectangle {
                 radius: 20
                 text: "退出"
                 font.family: "Microsoft YaHei"
-                font.pointSize: 40
+                font.pixelSize: 55
                 font.bold: true
+                font.weight: Font.Black
                 display: AbstractButton.TextOnly
                 DesignEffect {
                     effects: [
@@ -259,8 +265,9 @@ Rectangle {
             anchors.bottomMargin: 10
             font.family: "Microsoft YaHei"
             activeFocusOnTab: false
-            font.pointSize: 25
+            font.pixelSize: 30
             font.bold: true
+            font.weight: Font.Black
             Connections {
                 target: returnButton
                 onClicked: {
@@ -291,10 +298,10 @@ Rectangle {
             anchors.bottomMargin: 10
             font.family: "Microsoft YaHei"
             font.italic: false
-            icon.width: 30
             palette.button: "#348562"
-            font.pointSize: 40
+            font.pixelSize: 70
             font.bold: true
+            font.weight: Font.Black
             Connections {
                 target: questionButton
                 onClicked: {
