@@ -683,6 +683,84 @@ Rectangle {
             color:"#dfdfdf"
             visible: controlPanel.exportOpen
             focus: controlPanel.exportOpen
+            ColumnLayout{
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                anchors.topMargin: 10
+                anchors.bottomMargin: 10
+                Rectangle{
+                    id:outputBoxBackground
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    height:500
+                    ScrollView {
+                        id: outputBoxView
+                        anchors.fill: parent
+                        TextArea {
+                            id:outputBox
+                            wrapMode: TextInput.Wrap
+                            anchors.fill: outputBoxView
+                            readOnly: true
+                            text:"test"
+                        }
+                    }
+                }
+                RowLayout{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    RoundButton{
+                        id:textExportButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        palette.button: '#e54a4a'
+                        text:"保存至文件"
+                        font.pixelSize: 30
+                        font.weight: Font.Black
+                        font.family: "Microsoft YaHei"
+                        font.bold: true
+                        Connections {
+                            target: textExportButton
+                            onClicked: {
+                                fileDialog.open()
+                            }
+                        }
+                    }
+                    RoundButton{
+                        id:copyButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        palette.button: "#348562"
+                        text:"复制"
+                        font.pixelSize: 30
+                        font.weight: Font.Black
+                        font.family: "Microsoft YaHei"
+                        font.bold: true
+                        Connections {
+                            target: copyButton
+                            onClicked: {
+                            }
+                        }
+                    }
+                }
+                RoundButton{
+                    id:textExportQuitButton
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    palette.button: '#cdcdcd'
+                    text:"返回"
+                    font.pixelSize: 30
+                    font.weight: Font.Black
+                    font.family: "Microsoft YaHei"
+                    font.bold: true
+                    Connections {
+                        target: textExportQuitButton
+                        onClicked: {
+                            controlPanel.exportOpen=false
+                        }
+                    }
+                }
+            }
         }
     }
 
