@@ -12,6 +12,7 @@ import MiniTermProject
 import QtQuick.Studio.DesignEffects
 import QtQuick.Layouts
 import QtQuick.Studio.Components
+import QtQuick.Dialogs
 
 Rectangle {
     id: mainWindow
@@ -20,7 +21,7 @@ Rectangle {
     visible: true
     color: "#e6e6e6"
     state: "home"
-    Keys.forwardTo: [menu,questionPage,returnButton,questionButton,heapShower]
+    Keys.forwardTo: [menu,bluredBackground,controlPanel,heapShower]
     // Keys.forwardTo:{
     //     if(mainWindow.state==='home')return[menu]
     //     else if(controlPanel.questionOpen)return[questionPage]
@@ -254,7 +255,7 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         visible: parent.state === 'algo'?true:false
-        focus:parent.state === 'algo'?true:false
+        focus:parent.state === 'algo'&&!bluredBackground.visible?true:false
         Keys.onLeftPressed: scrollBar.decrease()
         Keys.onRightPressed: scrollBar.increase()
             ListView {
@@ -294,6 +295,8 @@ Rectangle {
         anchors.bottomMargin: 0
         Keys.forwardTo: [returnButton,questionButton]
         property bool questionOpen: false
+        property bool importOpen: false
+        property bool exportOpen: false
         RoundButton {
             id: returnButton
             width: returnButton.height
@@ -318,7 +321,7 @@ Rectangle {
                     menu.appScene = false
                 }
             }
-            focus: mainWindow.state === "home" || controlPanel.questionOpen? false : true
+            focus: mainWindow.state === "home" || bluredBackground.visible? false : true
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
                                     menu.algoScene = false
@@ -331,7 +334,7 @@ Rectangle {
 
         RoundButton {
             id: questionButton
-            width: returnButton.width
+            width: questionButton.height
             radius: 10
             text: "?"
             anchors.verticalCenter: parent.verticalCenter
@@ -356,18 +359,19 @@ Rectangle {
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Question){
                                     controlPanel.questionOpen = true
-                                }
+                                    event.accepted = true
+                                }else event.accepted = false
                             }
-            focus: mainWindow.state === "home" || controlPanel.questionOpen? false : true
+            focus: mainWindow.state === "home" || bluredBackground.visible? false : true
             activeFocusOnTab: false
         }
 
         RoundButton {
             id: importButton
-            width: 200
+            width: importButton.height
             radius: 10
             text: "导入"
-            anchors.right: parent.horizontalCenter
+            anchors.right: exportButton.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.rightMargin: 10
@@ -378,32 +382,95 @@ Rectangle {
             font.weight: Font.Black
             font.family: "Microsoft YaHei"
             font.bold: true
+            Connections {
+                target: importButton
+                onClicked: {
+                    controlPanel.importOpen=true
+                }
+            }
         }
 
         RoundButton {
             id: exportButton
-            width: 200
+            width: exportButton.height
             radius: 10
             text: "导出"
-            anchors.left: parent.horizontalCenter
+            anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            anchors.leftMargin: 10
+            anchors.rightMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            font.pixelSize: 30
             palette.button: "#68abd0"
+            font.pixelSize: 30
             font.weight: Font.Black
             font.family: "Microsoft YaHei"
             font.bold: true
+            Connections {
+                target: exportButton
+                onClicked: {
+                    controlPanel.exportOpen=true
+                }
+            }
+        }
+
+        RoundButton {
+            id: startButton
+            width: 240
+            radius: 10
+            text: "?"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+            font.pixelSize: 70
+            palette.button: "#348562"
+            font.weight: Font.Black
+            font.italic: false
+            font.family: "Microsoft YaHei"
+            font.bold: true
+        }
+
+        Slider {
+            id: speedSlider
+            width: 120
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: startButton.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+        }
+
+        RoundButton {
+            id: restartButton
+            width: 120
+            radius: 10
+            text: "?"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+            anchors.bottomMargin: 10
+            font.pixelSize: 70
+            palette.button: "#348562"
+            font.weight: Font.Black
+            font.italic: false
+            font.family: "Microsoft YaHei"
+            font.bold: true
+            anchors.right:startButton.left
         }
 
 
     }
 
     Rectangle {
-        id: questionBackground
-        visible: controlPanel.questionOpen
+        id: bluredBackground
+        visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen
         color: "#ffffff"
         border.width: 0
         anchors.fill: parent
@@ -412,6 +479,7 @@ Rectangle {
         Page {
             id: questionPage
             focus: controlPanel.questionOpen
+            visible: controlPanel.questionOpen
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
                                     controlPanel.questionOpen = false
@@ -420,11 +488,17 @@ Rectangle {
                                 else event.accepted = false
                             }
             Keys.onLeftPressed:(event) =>{
-                                   if(view.currentIndex > 0) view.currentIndex -=1 ;
+                                   if(view.currentIndex > 0){
+                                       event.accepted = true
+                                       view.currentIndex -=1 ;
+                                   }else event.accepted = false
                                }
             Keys.onRightPressed:(event) =>{
-                                   if(view.currentIndex<view.count-1) view.currentIndex +=1 ;
-                               }
+                                    if(view.currentIndex<view.count-1){
+                                        event.accepted = true
+                                        view.currentIndex +=1 ;
+                                    }else event.accepted = false
+                                }
             width: 400
             height: 400
             palette.window: "#cdcdcd"
@@ -435,89 +509,180 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 horizontalAlignment: Text.AlignHCenter
-                   verticalAlignment: Text.AlignVCenter
-                   font.pointSize: 20
-                   font.bold: true
-                   anchors.horizontalCenterOffset: 0
-                   anchors.horizontalCenter: parent.horizontalCenter
+                verticalAlignment: Text.AlignVCenter
+                font.pointSize: 20
+                font.bold: true
+                anchors.horizontalCenterOffset: 0
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Rectangle{
-            anchors.fill: parent
-            color:'white'
-            SwipeView {
-                id: view
-                currentIndex: 1
                 anchors.fill: parent
-                   clip: true
-                   palette.window: '#dfdfdf'
-                   // component HelpPage :Page{
-                   //     id: helpPage
-                   //     property  string title: "title"
-                   //     property alias  text   :helpPageText.text
-                   //     Text{
-                   //         id: helpPageText
-                   //         text: "text"
-                   //         anchors.fill: parent
-                   //         horizontalAlignment: Text.AlignHCenter
-                   //         verticalAlignment: Text.AlignTop
-                   //     }
-                   // }
-                   // HelpPage{
-                   //     id: page11
-                   //     title: "Page1"
-                   //     text: "test"
-                   // }
-                   // HelpPage{
-                   //     id: page21
-                   //     title: "Page2"
-                   //     text: "test"
-                   // }
-                   // HelpPage{
-                   //     id: page31
-                   //     title: "Page3"
-                   //     text: "test"
-                   // }
-                   Page {
-                       title: qsTr("Home")
+                color:'white'
+                SwipeView {
+                    id: view
+                    currentIndex: 1
+                    anchors.fill: parent
+                    clip: true
+                    palette.window: '#dfdfdf'
+                    Page {
+                        title: qsTr("Home")
 
-                       Text{
-                           id: text3
-                           text:"test"
-                           anchors.fill: parent
-                           horizontalAlignment: Text.AlignHCenter
-                           verticalAlignment: Text.AlignTop
-                       }
-                   }
-                   Page {
-                       title: qsTr("Discover")
-                       Text{
-                           id: text1
-                           text:"test1"
-                           anchors.fill: parent
-                           horizontalAlignment: Text.AlignHCenter
-                           verticalAlignment: Text.AlignVCenter
-                       }
-                   }
-                   Page {
-                       title: qsTr("Activity")
-                       Text{
-                           id: text2
-                           text:"test2"
-                           anchors.fill: parent
-                           horizontalAlignment: Text.AlignHCenter
-                           verticalAlignment: Text.AlignVCenter
-                       }
-                   }
-               }
-        }
+                        Text{
+                            id: text3
+                            text:"test"
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignTop
+                        }
+                    }
+                    Page {
+                        title: qsTr("Discover")
+                        Text{
+                            id: text1
+                            text:"test1"
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Page {
+                        title: qsTr("Activity")
+                        Text{
+                            id: text2
+                            text:"test2"
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
+            }
             PageIndicator {
                 id: indicator
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 count: view.count
                 currentIndex: view.currentIndex
-
             }
+        }
+
+        Rectangle {
+            id: importPage
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                    controlPanel.importOpen = false
+                                    event.accepted = true
+                                }
+                                else event.accepted = false
+                            }
+            FileDialog {
+                id: fileDialog
+                currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+                onAccepted: image.source = selectedFile
+                nameFilters: ["Text files (*.txt)"]
+            }
+            width: 400
+            height: 650
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color:"#dfdfdf"
+            visible: controlPanel.importOpen
+            focus: controlPanel.importOpen
+            ColumnLayout{
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                anchors.topMargin: 10
+                anchors.bottomMargin: 10
+                Rectangle{
+                    id:inputBoxBackground
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    height:500
+                    ScrollView {
+                        id: inputBoxView
+                        anchors.fill: parent
+                        TextArea {
+                            id:inputBox
+                            wrapMode: TextInput.Wrap
+                            anchors.fill: inputBoxView
+                            placeholderText: "请输入整数，用空格或回车分隔"
+                        }
+                    }
+                }
+                RoundButton{
+                    id:textImportButton
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    palette.button: '#cdcdcd'
+                    text:"从文件中导入"
+                    font.pixelSize: 30
+                    font.weight: Font.Black
+                    font.family: "Microsoft YaHei"
+                    font.bold: true
+                    Connections {
+                        target: textImportButton
+                        onClicked: {
+                            fileDialog.open()
+                        }
+                    }
+                }
+                RowLayout{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    RoundButton{
+                        id:importCancelButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        palette.button: '#e54a4a'
+                        text:"取消"
+                        font.pixelSize: 30
+                        font.weight: Font.Black
+                        font.family: "Microsoft YaHei"
+                        font.bold: true
+                        Connections {
+                            target: importCancelButton
+                            onClicked: {
+                                controlPanel.importOpen=false
+                            }
+                        }
+                    }
+                    RoundButton{
+                        id:importCheckButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        palette.button: "#348562"
+                        text:"确认"
+                        font.pixelSize: 30
+                        font.weight: Font.Black
+                        font.family: "Microsoft YaHei"
+                        font.bold: true
+                        Connections {
+                            target: importCheckButton
+                            onClicked: {
+                                controlPanel.importOpen=false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Rectangle {
+            id: exportPage
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                    controlPanel.exportOpen = false
+                                    event.accepted = true
+                                }
+                                else event.accepted = false
+                            }
+            width: 400
+            height: 400
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color:"#dfdfdf"
+            visible: controlPanel.exportOpen
+            focus: controlPanel.exportOpen
         }
     }
 
@@ -543,7 +708,7 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0}D{i:44;invisible:true}
+    D{i:0}D{i:49;invisible:true}
 }
 ##^##*/
 

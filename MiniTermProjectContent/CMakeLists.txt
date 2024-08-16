@@ -9,8 +9,8 @@ qt6_add_qml_module(MiniTermProjectContent
     VERSION 1.0
     RESOURCE_PREFIX "/qt/qml"
 	QML_FILES
-		"App.qml"
 		"Screen01.qml"
+		"App.qml"
 	RESOURCES
 		"images/home_background.svg"
 )
@@ -21,7 +21,7 @@ qt6_add_resources(MiniTermProjectContent MiniTermProjectContentBigResource
     PREFIX "/qt/qml/MiniTermProjectContent"
     VERSION 1.0
     FILES 
+    "fonts/msyh.ttf"
     "fonts/msyhbd.ttf"
     "fonts/msyhl.ttf"
-    "fonts/msyh.ttf"
 )
