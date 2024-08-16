@@ -21,7 +21,7 @@ Rectangle {
     visible: true
     color: "#e6e6e6"
     state: "home"
-    Keys.forwardTo: [menu,bluredBackground,controlPanel,heapShower]
+    Keys.forwardTo: [menu,bluredBackground,heapShower,controlPanel,heapTable]
     // Keys.forwardTo:{
     //     if(mainWindow.state==='home')return[menu]
     //     else if(controlPanel.questionOpen)return[questionPage]
@@ -256,8 +256,17 @@ Rectangle {
         anchors.rightMargin: 0
         visible: parent.state === 'algo'?true:false
         focus:parent.state === 'algo'&&!bluredBackground.visible?true:false
-        Keys.onLeftPressed: scrollBar.decrease()
-        Keys.onRightPressed: scrollBar.increase()
+        Keys.onPressed: (event) =>{
+                            if(event.key===Qt.Key_Plus||event.key===Qt.Key_Equal){
+                                heapScrollBar.increase()
+                                event.accepted = true
+                            }
+                            else if(event.key===Qt.Key_Minus||event.key===Qt.Key_Underscore){
+                                heapScrollBar.decrease()
+                                event.accepted = true
+                            }
+                            else event.accepted = false
+                        }
             ListView {
                 id:heap
                 anchors.fill: parent
@@ -277,7 +286,7 @@ Rectangle {
                         text:index
                     }
                 }
-                ScrollBar.horizontal: ScrollBar { id: scrollBar }
+                ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
             }
     }
     Rectangle {
@@ -302,7 +311,7 @@ Rectangle {
             width: returnButton.height
             radius: 10
             palette.button: '#e54a4a'
-            text: "返回"
+            text: "↩"
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -311,7 +320,7 @@ Rectangle {
             anchors.bottomMargin: 10
             font.family: "Microsoft YaHei"
             activeFocusOnTab: false
-            font.pixelSize: 30
+            font.pixelSize: 100
             font.bold: true
             font.weight: Font.Black
             Connections {
@@ -418,15 +427,16 @@ Rectangle {
             id: startButton
             width: 240
             radius: 10
-            text: "?"
+            text: "▶"
+            visible:mainWindow.state==="algo"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            font.pixelSize: 70
-            palette.button: "#348562"
+            font.pixelSize: 125
+            palette.button: "#d69545"
             font.weight: Font.Black
             font.italic: false
             font.family: "Microsoft YaHei"
@@ -436,6 +446,7 @@ Rectangle {
         Slider {
             id: speedSlider
             width: 120
+            visible:mainWindow.state==="algo"
             anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -443,31 +454,46 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
+            background: Rectangle {
+                    x: speedSlider.leftPadding
+                    y: speedSlider.topPadding + speedSlider.availableHeight / 2 - height / 2
+                    implicitWidth: 200
+                    implicitHeight: 4
+                    width: speedSlider.availableWidth
+                    height: implicitHeight
+                    radius: 2
+                    color: "#e6e6e6"
+
+                    Rectangle {
+                        width: speedSlider.visualPosition * parent.width
+                        height: parent.height
+                        color: "#5f694e"
+                        radius: 2
+                    }
+                }
         }
 
         RoundButton {
             id: restartButton
             width: 120
             radius: 10
-            text: "?"
+            text: "↻"
+            visible:mainWindow.state==="algo"
             anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.rightMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            font.pixelSize: 70
-            palette.button: "#348562"
+            font.pixelSize: 100
+            palette.button: "#bdcf9a"
             font.weight: Font.Black
             font.italic: false
             font.family: "Microsoft YaHei"
             font.bold: true
             anchors.right:startButton.left
         }
-
-
     }
-
     Rectangle {
         id: bluredBackground
         visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen
@@ -763,7 +789,34 @@ Rectangle {
             }
         }
     }
-
+    TableView {
+        id:heapTable
+        visible:parent.state==="algo"&&!bluredBackground.visible
+        anchors.left: parent.left
+        anchors.bottom: heapShower.top
+        anchors.top: parent.top
+        anchors.right:parent.right
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
+        columnSpacing: 1
+        rowSpacing: 1
+        clip: true
+        ScrollBar.vertical: ScrollBar {
+            id:vbar
+            visible:false
+        }
+        ScrollBar.horizontal: ScrollBar {
+            id:hbar
+            visible:false
+        }
+        focus:parent.state==='algo'&&!bluredBackground.visible
+        Keys.onLeftPressed: hbar.decrease()
+        Keys.onRightPressed: hbar.increase()
+        Keys.onUpPressed: vbar.decrease()
+        Keys.onDownPressed: vbar.increase()
+    }
     states: [
         State {
             name: "home"
@@ -786,7 +839,7 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0}D{i:49;invisible:true}
+    D{i:0}D{i:52;invisible:true}
 }
 ##^##*/
 
