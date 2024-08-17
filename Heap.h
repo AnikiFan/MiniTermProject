@@ -18,8 +18,8 @@ private:
     /// @brief 用于代表空节点
     const long long null=-1LL;
     bool (*cmp)(const T&,const T&);
-    long long lchild(long long i);
-    long long rchild(long long i);
+    long long lchild(long long i)const;
+    long long rchild(long long i)const;
     /// @brief 堆的大小（elem[0]也是一个元素，没有设置哨兵）
     long long heapsz;
     void maintain(long long i);
@@ -66,7 +66,7 @@ inline void Heap<T>::sort()
 /// @param i 指定下标
 /// @return 指定下标对应的左孩子的下标
 template <typename T>
-inline long long Heap<T>::lchild(long long i)
+inline long long Heap<T>::lchild(long long i)const
 {
     return 2*i+1<heapsz?2*i+1:null;
 }
@@ -76,7 +76,7 @@ inline long long Heap<T>::lchild(long long i)
 /// @param i 指定下标
 /// @return 指定下标对应的右孩子的下标
 template <typename T>
-inline long long Heap<T>::rchild(long long i)
+inline long long Heap<T>::rchild(long long i)const
 {
     return 2*i+2<heapsz?2*i+2:null;
 }

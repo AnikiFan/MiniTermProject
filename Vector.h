@@ -1,5 +1,3 @@
-#ifndef VECTOR_H
-#define VECTOR_H
 #include<stdexcept>
 /// @brief Vector类实现
 /// @tparam T
@@ -8,6 +6,7 @@ class Vector
 {
 public:
     explicit Vector(long long s=0);
+    Vector(std::initializer_list<T> initList);
     ~Vector();
     T& operator[](long long i);
     const T&operator[](long long i)const;
@@ -76,6 +75,19 @@ inline Vector<T>::Vector(long long s)
     if(!elem){throw std::overflow_error("Vector::Vector");}
     len = 0;
     sz = s;
+}
+
+/// @brief 列表初始化方式
+/// @tparam T
+/// @param initList
+template <typename T>
+inline Vector<T>::Vector(std::initializer_list<T> initList)
+{
+    elem = new T[initList.size()];
+    if(!elem){throw std::overflow_error("Vector::Vector");}
+    len = 0;
+    sz = initList.size();
+    for(auto &x:initList){push_back(x);}
 }
 
 /// @brief 析构函数
@@ -166,4 +178,3 @@ inline void Vector<T>::extend()
     elem = tmp;
     return;
 }
-#endif // VECTOR_H

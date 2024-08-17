@@ -23,6 +23,11 @@ qt_standard_project_setup()
 qt_add_executable(${CMAKE_PROJECT_NAME}
     Vector.h
     Heap.h
+    heapmodel.h heapmodel.cpp
+    heaplistmodel.h heaplistmodel.cpp
+    heaptablemodel.h heaptablemodel.cpp
+    element.h element.cpp
+    formatter.h formatter.cpp
 )
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"
