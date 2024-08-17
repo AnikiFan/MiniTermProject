@@ -28,6 +28,7 @@ qt_add_executable(${CMAKE_PROJECT_NAME}
     heaptablemodel.h heaptablemodel.cpp
     element.h element.cpp
     formatter.h formatter.cpp
+    fileobject.h fileobject.cpp
 )
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"

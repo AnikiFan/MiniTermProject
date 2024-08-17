@@ -13,6 +13,7 @@ import QtQuick.Studio.DesignEffects
 import QtQuick.Layouts
 import QtQuick.Studio.Components
 import QtQuick.Dialogs
+import Qt.labs.platform
 import HeapListModel
 import HeapTableModel
 import Element
@@ -599,7 +600,7 @@ Rectangle {
                             }
             FileDialog {
                 id: fileDialog
-                currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
                 onAccepted: image.source = selectedFile
                 nameFilters: ["Text files (*.txt)"]
             }

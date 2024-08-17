@@ -21,8 +21,50 @@ HeapModel::HeapModel(QObject*parent):Heap<Element>{
 {
 
 }
+
+HeapModel::HeapModel(const char * const p, QObject *parent)
+    :Heap<Element>{Vector<Element>{0}, [](const Element &x,const Element &y){return x.value<y.value;}},
+        QObject{parent }
+{
+    long long i{0};
+    bool negative{false},isNumber{false};
+    long long number{0};
+    while(p[i++]){
+        if(p[i]=='-'){negative=true;}
+        else if(p[i]>='0'||p[i]<='9'){
+            isNumber=true;
+            number *= 10;
+            number += p[i]-'0';
+        }else if(isNumber){
+            push_back(negative?-number:number);
+            number = 0;
+            isNumber = false;
+        }else{negative = false;}
+    }
+}
 /// @brief 析构函数
 HeapModel::~HeapModel()
 {
 
+}
+
+void HeapModel::reload(const char * const p)
+{
+    empty();
+    long long i{0};
+    bool negative{false},isNumber{false};
+    long long number{0};
+    while(p[i++]){
+        if(p[i]=='-'){negative=true;}
+        else if(p[i]>='0'||p[i]<='9'){
+            isNumber=true;
+            number *= 10;
+            number += p[i]-'0';
+        }else if(isNumber){
+            push_back(negative?-number:number);
+            number = 0;
+            isNumber = false;
+        }else{negative = false;}
+    }
+    return;
 }

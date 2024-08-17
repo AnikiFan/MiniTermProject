@@ -13,6 +13,7 @@ public:
     long long length()const;
     void push_back(const T& value);
     void swap(long long x,long long y);
+    void empty();
 protected:
     /// @brief 指向元素指针
     T* elem;
@@ -153,6 +154,16 @@ inline void Vector<T>::swap(long long x, long long y)
     T tmp{std::move(elem[x])};
     elem[x] = std::move(elem[y]);
     elem[y] = std::move(tmp);
+    return;
+}
+
+template<typename T>
+inline void Vector<T>::empty()
+{
+    delete elem;
+    elem = nullptr;
+    sz = 0;
+    len = 0;
     return;
 }
 

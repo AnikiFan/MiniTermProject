@@ -12,7 +12,9 @@ class HeapModel:public QObject, Heap<Element>
     Q_OBJECT
 public:
     explicit HeapModel(QObject*parent = nullptr);
+    explicit HeapModel(const char*const,QObject*parent=nullptr);
     ~HeapModel();
+    void reload(const char*const);
     friend HeapListModel;
     friend HeapTableModel;
 };

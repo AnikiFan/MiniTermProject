@@ -9,6 +9,7 @@
 #include"heaplistmodel.h"
 #include"heaptablemodel.h"
 #include"element.h"
+#include"fileobject.h"
 int main(int argc, char *argv[])
 {
     set_qt_environment();
@@ -24,6 +25,9 @@ int main(int argc, char *argv[])
     HeapTableModel *heapTableModel = new HeapTableModel(heapModel,heapModel);
     qmlRegisterSingletonInstance("HeapTableModel",1,0,"HeapTableModel",heapTableModel);
     qmlRegisterUncreatableType<Element>("Element", 1, 0, "Element", "Not creatable as it is an enum type");
+    FileObject *fileObject = new FileObject(heapModel,heapModel);
+    qmlRegisterSingletonInstance("FileObject",1,0,"FileObject",fileObject);
+
     QObject::connect(
                 &engine, &QQmlApplicationEngine::objectCreated, &app,
                 [url](QObject *obj, const QUrl &objUrl) {
