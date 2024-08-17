@@ -17,6 +17,7 @@ import Qt.labs.platform
 import HeapListModel
 import HeapTableModel
 import Element
+import FileObject
 
 Rectangle {
     id: mainWindow
@@ -599,9 +600,21 @@ Rectangle {
                                 else event.accepted = false
                             }
             FileDialog {
-                id: fileDialog
+                id: readFileDialog
                 folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-                onAccepted: image.source = selectedFile
+                onAccepted: {
+                    FileObject.source = readFileDialog.file
+                    FileObject.read()
+                }
+                nameFilters: ["Text files (*.txt)"]
+            }
+            FileDialog {
+                id: writeFileDialog
+                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                onAccepted: {
+                    FileObject.source = writeFileDialog.file
+                    FileObject.write(outputBox.text)
+                }
                 nameFilters: ["Text files (*.txt)"]
             }
             width: 400
@@ -646,7 +659,7 @@ Rectangle {
                     Connections {
                         target: textImportButton
                         onClicked: {
-                            fileDialog.open()
+                            readFileDialog.open()
                         }
                     }
                 }
@@ -745,7 +758,7 @@ Rectangle {
                         Connections {
                             target: textExportButton
                             onClicked: {
-                                fileDialog.open()
+                                writeFileDialog.open()
                             }
                         }
                     }
@@ -762,6 +775,9 @@ Rectangle {
                         Connections {
                             target: copyButton
                             onClicked: {
+                                outputBox.selectAll()
+                                outputBox.copy()
+                                outputBox.deselect()
                             }
                         }
                     }

@@ -2,6 +2,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QTextStream>
+#include<QDebug>
 FileObject::FileObject(HeapModel*model,QObject *parent)
     :QObject{parent},target{model}
 {
@@ -27,8 +28,10 @@ bool FileObject::write(const QString &data)
         QTextStream out(&file);
         out<<data;
         file.close();
+        qDebug()<<"output successfully\n";
         return true;
     }
+    qDebug()<<"output failed\n";
     return false;
 }
 
