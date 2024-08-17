@@ -5,7 +5,10 @@
 #include <QQmlApplicationEngine>
 
 #include "autogen/environment.h"
-
+#include"heapmodel.h"
+#include"heaplistmodel.h"
+#include"heaptablemodel.h"
+#include"element.h"
 int main(int argc, char *argv[])
 {
     set_qt_environment();
@@ -13,6 +16,14 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(mainQmlFile);
+
+    HeapModel *heapModel = new HeapModel(&app);
+    qmlRegisterSingletonInstance("HeapModel",1,0,"HeapModel",heapModel);
+    HeapListModel *heapListModel = new HeapListModel(heapModel,heapModel);
+    qmlRegisterSingletonInstance("HeapListModel",1,0,"HeapListModel",heapListModel);
+    HeapTableModel *heapTableModel = new HeapTableModel(heapModel,heapModel);
+    qmlRegisterSingletonInstance("HeapTableModel",1,0,"HeapTableModel",heapTableModel);
+    qmlRegisterUncreatableType<Element>("Element", 1, 0, "Element", "Not creatable as it is an enum type");
     QObject::connect(
                 &engine, &QQmlApplicationEngine::objectCreated, &app,
                 [url](QObject *obj, const QUrl &objUrl) {

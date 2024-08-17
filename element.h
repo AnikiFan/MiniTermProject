@@ -1,9 +1,10 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
-
+#include <QObject>
 /// @brief 堆中的元素，用于可视化
 class Element
 {
+    Q_GADGET
 public:
     Element();
     ~Element();
@@ -18,6 +19,7 @@ public:
     };
     State state;
     Element(long long val,State st=Active);
+    Q_ENUM(State)
 };
 
 #endif // ELEMENT_H

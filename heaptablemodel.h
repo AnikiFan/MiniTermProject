@@ -16,8 +16,9 @@ public:
         ValueRole = Qt::UserRole,
         StateRole = Qt::UserRole+1
     };
-
     ~HeapTableModel();
+    Q_PROPERTY(long long rowNumber READ rowNumber NOTIFY rowNumberChanged FINAL)
+    Q_PROPERTY(long long  colNumber READ colNumber NOTIFY colNumberChanged FINAL)
 public:
     virtual int rowCount(const QModelIndex & = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex & = QModelIndex()) const override;
@@ -30,6 +31,13 @@ private:
     /// @brief 指向所需可视化的堆
     HeapModel * heap;
     Formatter formatter;
+    long long m_rowNumber;
+    long long rowNumber()const;
+    long long m_colNumber;
+    long long colNumber()const;
+signals:
+    void rowNumberChanged();
+    void colNumberChanged();
 };
 
 #endif // HEAPTABLEMODEL_H

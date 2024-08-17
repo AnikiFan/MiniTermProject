@@ -13,6 +13,9 @@ import QtQuick.Studio.DesignEffects
 import QtQuick.Layouts
 import QtQuick.Studio.Components
 import QtQuick.Dialogs
+import HeapListModel
+import HeapTableModel
+import Element
 
 Rectangle {
     id: mainWindow
@@ -49,10 +52,8 @@ Rectangle {
         clip: true
         focus: mainWindow.state === "home" ? true : false
         opacity: 0.6
-        layer.smooth: true
         property bool appScene: false
         property bool algoScene: false
-        antialiasing: false
         anchors.horizontalCenter: parent.horizontalCenter
         Keys.onPressed: (event) => {if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
                                 Qt.quit();
@@ -273,7 +274,7 @@ Rectangle {
                 anchors.margins: 10
                 spacing: 4
                 clip: true
-                model: 100
+                model: HeapListModel
                 orientation: ListView.Horizontal
                 delegate: Rectangle {
                     required property int index
@@ -798,6 +799,30 @@ Rectangle {
         columnSpacing: 1
         rowSpacing: 1
         clip: true
+        rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
+        columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
+        model:HeapTableModel
+        Component.onCompleted: {console.log(height,width,HeapTableModel.rowNumber,HeapTableModel.colNumber)}
+        delegate: Rectangle {
+            color:"white"
+            Rectangle{
+                width: parent.width>parent.height?parent.height:parent.width
+                height:width
+                radius:width/2
+                color:{
+                    if(model.state===Element.Active){return 'blue'}
+                    if(model.state===Element.Inactive){return 'red'}
+                    if(model.state===Element.Invalid){return 'white'}
+                }
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                Text{
+                anchors.centerIn: parent
+                text:"test"
+                }
+
+            }
+        }
         ScrollBar.vertical: ScrollBar {
             id:vbar
             visible:false
