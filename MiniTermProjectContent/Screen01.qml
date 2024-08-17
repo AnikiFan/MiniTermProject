@@ -346,7 +346,6 @@ Rectangle {
             width: questionButton.height
             radius: 10
             text: "?"
-            anchors.verticalCenter: parent.verticalCenter
             anchors.left: returnButton.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -430,7 +429,6 @@ Rectangle {
             text: "▶"
             visible:mainWindow.state==="algo"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.topMargin: 10
@@ -447,7 +445,6 @@ Rectangle {
             id: speedSlider
             width: 120
             visible:mainWindow.state==="algo"
-            anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.left: startButton.right
@@ -479,7 +476,6 @@ Rectangle {
             radius: 10
             text: "↻"
             visible:mainWindow.state==="algo"
-            anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.rightMargin: 10
@@ -533,13 +529,12 @@ Rectangle {
             header: Label {
                 text: view.currentItem.title
                 anchors.top: parent.top
-                anchors.topMargin: 10
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.pointSize: 20
                 font.bold: true
-                anchors.horizontalCenterOffset: 0
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.right: parent.right
+                anchors.left: parent.left
             }
             Rectangle{
                 anchors.fill: parent
@@ -630,8 +625,8 @@ Rectangle {
                         anchors.fill: parent
                         TextArea {
                             id:inputBox
-                            wrapMode: TextInput.Wrap
-                            anchors.fill: inputBoxView
+                            wrapMode: Text.Wrap
+                            anchors.fill:inputBoxView
                             placeholderText: "请输入整数，用空格或回车分隔"
                         }
                     }
@@ -726,9 +721,9 @@ Rectangle {
                         TextArea {
                             id:outputBox
                             wrapMode: TextInput.Wrap
-                            anchors.fill: outputBoxView
+                            anchors.fill: parent
                             readOnly: true
-                            text:"test"
+                            text:"testttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
                         }
                     }
                 }
