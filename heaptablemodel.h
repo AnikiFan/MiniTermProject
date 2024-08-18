@@ -31,6 +31,8 @@ private:
 signals:
     void rowNumberChanged();
     void colNumberChanged();
+public slots:
+    void onElementSwaped(long long x,long long y);
 protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 };

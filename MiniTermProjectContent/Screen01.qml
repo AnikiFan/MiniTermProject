@@ -806,7 +806,7 @@ Rectangle {
                     visible: model.state===Element.Invalid?false:true
                     Text{
                         anchors.centerIn: parent
-                        text:(model.value*100000).toString()
+                        text:(model.value).toString()
                         anchors.fill: parent
                         wrapMode: Text.WrapAnywhere
                         horizontalAlignment: Text.AlignHCenter

@@ -6,7 +6,6 @@
 HeapListModel::HeapListModel(HeapModel*base, QObject *parent)
     :heap{base},QAbstractListModel{parent}
 {
-
     QObject::connect(base,&HeapModel::elementSwaped,this,&HeapListModel::onElementSwaped);
 }
 
@@ -48,7 +47,8 @@ QVariant HeapListModel::data(const QModelIndex &index, int role) const
 
 void HeapListModel::onElementSwaped(long long x, long long y)
 {
-    //emit dataChanged(QModelIndex(x),QModelIndex(x));
+    emit dataChanged(index(x),index(x));
+    emit dataChanged(index(y),index(y));
 }
 
 QHash<int, QByteArray> HeapListModel::roleNames() const

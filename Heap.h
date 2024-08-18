@@ -15,6 +15,7 @@ public:
     bool sorted=false;
     void sort();
 private:
+    void shrink();
     /// @brief 用于代表空节点
     const long long null=-1LL;
     bool (*cmp)(const T&,const T&);
@@ -48,14 +49,25 @@ inline Heap<T>::~Heap()
 /// @brief 堆排序
 /// @tparam T
 template <typename T>
+inline void Heap<T>::shrink()
+{
+    if(!heapsz){throw std::underflow_error("Heap::shrink");}
+    heapsz --;
+    this->swap(0,heapsz);
+    return;
+}
+
+/// @brief 堆排序
+/// @tparam T
+template <typename T>
 inline void Heap<T>::sort()
 {
     if(sorted){return;}
     build();
-    while(heapsz>1){
+    while(heapsz){
         // cout<<"heapsize:"<<heapsz<<endl;
-        this->swap(0,--heapsz);
-        maintain(0);
+        shrink();
+        if(heapsz){maintain(0);};
     }
     sorted=true;
     return;

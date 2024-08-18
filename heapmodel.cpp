@@ -80,7 +80,7 @@ void HeapModel::reload(const char * const p)
 
 void HeapModel::swap(long long x, long long y)
 {
-    qDebug()<<x<<"   "<<y<<"\n";
+    //qDebug()<<x<<"   "<<y<<"\n";
     Vector<Element>::swap(x,y);
     emit elementSwaped(x,y);
     QEventLoop loop;

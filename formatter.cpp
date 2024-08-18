@@ -43,3 +43,22 @@ long long Formatter::transform(long long r, long long c)const
     //c>>r：所在行中排在第几位，从0开始
     //从上往下在第row-r层，从1开始
 }
+
+void Formatter::transform(long long i,long long&r,long long&c)const
+{
+    if(i<0||i>=size){throw std::invalid_argument("Formatter:transform");}
+    r = -1;
+    long long tmp{i};
+    for(tmp++;tmp;tmp>>=1){r++;}
+    //第i+1个元素，从1开始
+    //在第r行，从0开始
+    //在其上方，有r行完整的，共2^{r}-1个元素
+    //在同一行，有(i+1)-(2^{r}-1)个元素
+    //第一个元素位于1<<(row-r-1)列，从1开始
+    //后续元素列数增加值为1<<(row-r)
+    c = (1<<(row-r-1))+(i-(1<<r)+1)*(1<<(row-r))-1;
+
+    //qDebug()<<"i:"<<i<<"   "<<"r:"<<r<<"    "<<"c:"<<c<<"\n";
+    //qDebug()<<"(1<<(row-r-1)):"<<(1<<(row-r-1))<<"    (i-(1<<r)+1):"<<(i-(1<<r)+1)<<"       (1<<(row-r)):"<<(1<<(row-r))<<"\n";
+    return;
+}
