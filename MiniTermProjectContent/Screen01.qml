@@ -271,24 +271,23 @@ Rectangle {
                             else event.accepted = false
                         }
             ListView {
-                id:heap
+                id:heapListView
                 anchors.fill: parent
                 anchors.margins: 10
                 spacing: 4
                 clip: true
-                model: HeapListModel
                 orientation: ListView.Horizontal
+                model:HeapListModel
                 delegate: Rectangle {
-                    required property int index
                     width: 80
                     height: 80
                     color:"red"
-                    opacity:index/100
                     Text{
                         anchors.centerIn: parent
-                        text:index
+                        text:model.value
                     }
                 }
+                Component.onCompleted: {console.log(HeapListModel)}
                 ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
             }
     }
@@ -835,7 +834,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 Text{
                 anchors.centerIn: parent
-                text:"test"
+                text:model.value
                 }
 
             }

@@ -17,6 +17,7 @@ QString FileObject::read()
     if ( file.open(QIODevice::ReadOnly) ) {
         content = file.readAll();
         file.close();
+        qDebug()<<"read successfully\n";
     }
     return content;
 }
