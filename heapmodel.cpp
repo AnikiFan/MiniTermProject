@@ -1,6 +1,8 @@
 #include "heapmodel.h"
 #include "element.h"
 #include<QDebug>
+#include<QEventLoop>
+#include<QTimer>
 /// @brief 构造函数，附带一个简单的样例
 /// @param parent 
 HeapModel::HeapModel(QObject*parent):Heap<Element>{
@@ -18,14 +20,20 @@ HeapModel::HeapModel(QObject*parent):Heap<Element>{
                            {0,Element::Active}
           }),
                         [](const Element &x,const Element &y){return x.value<y.value;}
-      },QObject(parent)
+      },QAbstractItemModel{parent}
 {
-
+    m_roleNames[ValueRole] = "value";
+    m_roleNames[StateRole] = "state";
 }
-
+/// @brief QML系统所需的函数
+/// @return
+QHash<int, QByteArray> HeapModel::roleNames() const
+{
+    return m_roleNames;
+}
 HeapModel::HeapModel(const char * const p, QObject *parent)
     :Heap<Element>{Vector<Element>{0}, [](const Element &x,const Element &y){return x.value<y.value;}},
-        QObject{parent }
+        QAbstractItemModel{parent}
 {
     long long i{0};
     bool negative{false},isNumber{false};
@@ -73,17 +81,41 @@ void HeapModel::reload(const char * const p)
 void HeapModel::swap(long long x, long long y)
 {
     qDebug()<<x<<"   "<<y<<"\n";
-    if(x<0||length()<=x){throw std::out_of_range("Vector::swap");}
-    if(y<0||length()<=y){throw std::out_of_range("Vector::swap");}
-    if(x==y){return;}
-    Element tmp{std::move(elem[x])};
-    elem[x] = std::move(elem[y]);
-    elem[y] = std::move(tmp);
+    Vector<Element>::swap(x,y);
+    emit elementSwaped(x,y);
+    QEventLoop loop;
+    QTimer::singleShot(1000, &loop, &QEventLoop::quit);  // 1000 毫秒 = 1 秒
+    loop.exec();  // 进入事件循环，等待 QTimer 触发
     return;
+}
+
+QModelIndex HeapModel::index(int row, int column, const QModelIndex &parent) const
+{
+    return index(0,0);
+}
+
+QModelIndex HeapModel::parent(const QModelIndex &child) const
+{
+    return index(0,0);
+}
+
+int HeapModel::rowCount(const QModelIndex &parent) const
+{
+    return 0;
+}
+
+int HeapModel::columnCount(const QModelIndex &parent) const
+{
+    return 0;
+}
+
+QVariant HeapModel::data(const QModelIndex &index, int role) const
+{
+    return QVariant();
 }
 
 void HeapModel::start()
 {
-    sort();
+    Heap<Element>::sort();
     return;
 }

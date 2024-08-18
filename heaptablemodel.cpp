@@ -7,8 +7,6 @@
 HeapTableModel::HeapTableModel(HeapModel *base, QObject *parent)
     :heap{base},QAbstractTableModel{parent},formatter{base->length()}
 {
-    m_roleNames[ValueRole] = "value";
-    m_roleNames[StateRole] = "state";
     m_rowNumber = formatter.rowNum();
     m_colNumber = formatter.colNum();
 }
@@ -48,21 +46,13 @@ QVariant HeapTableModel::data(const QModelIndex &index, int role) const
     const Element elem =  formatter.transform(index.row(),index.column()) == -1?
             Element{0,Element::Invalid}:heap->elem[formatter.transform(index.row(),index.column())];
     switch(role) {
-    case ValueRole:
+    case HeapModel::ValueRole:
         return QVariant(elem.value);
-    case StateRole:
+    case HeapModel::StateRole:
         return elem.state;
     }
     return QVariant();
 }
-
-/// @brief QML系统所需
-/// @return 
-QHash<int, QByteArray> HeapTableModel::roleNames() const
-{
-    return m_roleNames;
-}
-
 long long HeapTableModel::rowNumber() const
 {
     return m_rowNumber;
@@ -71,4 +61,9 @@ long long HeapTableModel::rowNumber() const
 long long HeapTableModel::colNumber() const
 {
     return m_colNumber;
+}
+
+QHash<int, QByteArray> HeapTableModel::roleNames() const
+{
+    return heap->roleNames();
 }

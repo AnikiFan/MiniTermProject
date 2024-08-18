@@ -6,8 +6,8 @@
 HeapListModel::HeapListModel(HeapModel*base, QObject *parent)
     :heap{base},QAbstractListModel{parent}
 {
-    m_roleNames[ValueRole] = "value";
-    m_roleNames[StateRole] = "state";
+
+    QObject::connect(base,&HeapModel::elementSwaped,this,&HeapListModel::onElementSwaped);
 }
 
 /// @brief 析构函数
@@ -36,17 +36,22 @@ QVariant HeapListModel::data(const QModelIndex &index, int role) const
     }
     const Element elem = (*heap)[row];
     switch(role) {
-    case ValueRole:
+    case HeapModel::ValueRole:
         return elem.value;
-    case StateRole:
+    case HeapModel::StateRole:
         return elem.state;
     }
     return QVariant();
 }
 
-/// @brief QML系统所需的函数
-/// @return 
+
+
+void HeapListModel::onElementSwaped(long long x, long long y)
+{
+    //emit dataChanged(QModelIndex(x),QModelIndex(x));
+}
+
 QHash<int, QByteArray> HeapListModel::roleNames() const
 {
-    return m_roleNames;
+    return heap->roleNames();
 }
