@@ -1,5 +1,6 @@
 #include "heapmodel.h"
 #include "element.h"
+#include<QDebug>
 /// @brief 构造函数，附带一个简单的样例
 /// @param parent 
 HeapModel::HeapModel(QObject*parent):Heap<Element>{
@@ -66,5 +67,23 @@ void HeapModel::reload(const char * const p)
             isNumber = false;
         }else{negative = false;}
     }
+    return;
+}
+
+void HeapModel::swap(long long x, long long y)
+{
+    qDebug()<<x<<"   "<<y<<"\n";
+    if(x<0||length()<=x){throw std::out_of_range("Vector::swap");}
+    if(y<0||length()<=y){throw std::out_of_range("Vector::swap");}
+    if(x==y){return;}
+    Element tmp{std::move(elem[x])};
+    elem[x] = std::move(elem[y]);
+    elem[y] = std::move(tmp);
+    return;
+}
+
+void HeapModel::start()
+{
+    sort();
     return;
 }

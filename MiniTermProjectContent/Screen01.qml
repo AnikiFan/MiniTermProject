@@ -16,6 +16,7 @@ import QtQuick.Dialogs
 import Qt.labs.platform
 import HeapListModel
 import HeapTableModel
+import HeapModel
 import Element
 import FileObject
 
@@ -37,7 +38,6 @@ Rectangle {
         visible: mainWindow.state === "home" ? true : false
         anchors.fill: parent
         source: "qrc:/qtquickplugin/images/template_image.png"
-        layer.enabled: false
         fillMode: Image.Stretch
     }
     Rectangle {
@@ -249,48 +249,7 @@ Rectangle {
         }
     }
 
-    Item {
-        id:heapShower
-        height: 100
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: controlPanel.top
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        visible: parent.state === 'algo'?true:false
-        focus:parent.state === 'algo'&&!bluredBackground.visible?true:false
-        Keys.onPressed: (event) =>{
-                            if(event.key===Qt.Key_Plus||event.key===Qt.Key_Equal){
-                                heapScrollBar.increase()
-                                event.accepted = true
-                            }
-                            else if(event.key===Qt.Key_Minus||event.key===Qt.Key_Underscore){
-                                heapScrollBar.decrease()
-                                event.accepted = true
-                            }
-                            else event.accepted = false
-                        }
-            ListView {
-                id:heapListView
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 4
-                clip: true
-                orientation: ListView.Horizontal
-                model:HeapListModel
-                delegate: Rectangle {
-                    width: 80
-                    height: 80
-                    color:"red"
-                    Text{
-                        anchors.centerIn: parent
-                        text:model.value
-                    }
-                }
-                Component.onCompleted: {console.log(HeapListModel)}
-                ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
-            }
-    }
+
     Rectangle {
         id: controlPanel
         y: 903
@@ -441,6 +400,10 @@ Rectangle {
             font.italic: false
             font.family: "Microsoft YaHei"
             font.bold: true
+            onClicked: {
+                console.log('startButton clicked')
+                HeapModel.start()
+            }
         }
 
         Slider {
@@ -801,6 +764,60 @@ Rectangle {
             }
         }
     }
+    Item {
+        id:heapShower
+        height: 100
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: controlPanel.top
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        visible: parent.state === 'algo'?true:false
+        focus:parent.state === 'algo'&&!bluredBackground.visible?true:false
+        Keys.onPressed: (event) =>{
+                            if(event.key===Qt.Key_Plus||event.key===Qt.Key_Equal){
+                                heapScrollBar.increase()
+                                event.accepted = true
+                            }
+                            else if(event.key===Qt.Key_Minus||event.key===Qt.Key_Underscore){
+                                heapScrollBar.decrease()
+                                event.accepted = true
+                            }
+                            else event.accepted = false
+                        }
+            ListView {
+                id:heapListView
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 4
+                clip: true
+                orientation: ListView.Horizontal
+                model:HeapListModel
+                delegate: Rectangle {
+                    border.width: 5
+                    border.color: 'black'
+                    width: 80
+                    height: 80
+                    color:{
+                        if(model.state===Element.Active){return '#8ab8b6'}
+                        if(model.state===Element.Inactive){return '#d5b29c'}
+                        if(model.state===Element.Invalid){return 'black'}
+                    }
+                    visible: model.state===Element.Invalid?false:true
+                    Text{
+                        anchors.centerIn: parent
+                        text:(model.value*100000).toString()
+                        anchors.fill: parent
+                        wrapMode: Text.WrapAnywhere
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.margins: parent.border.width
+                    }
+                }
+                Component.onCompleted: {console.log(HeapListModel)}
+                ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
+            }
+    }
     TableView {
         id:heapTable
         visible:parent.state==="algo"&&!bluredBackground.visible
@@ -812,23 +829,25 @@ Rectangle {
         anchors.rightMargin: 0
         anchors.topMargin: 0
         anchors.bottomMargin: 0
-        columnSpacing: 1
-        rowSpacing: 1
+        columnSpacing: 0
+        rowSpacing: 0
         clip: true
         rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
         columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
         model:HeapTableModel
         Component.onCompleted: {console.log(height,width,HeapTableModel.rowNumber,HeapTableModel.colNumber)}
         delegate: Rectangle {
+
             color:"white"
             Rectangle{
+                visible: model.state===Element.Invalid?false:true
                 width: parent.width>parent.height?parent.height:parent.width
                 height:width
                 radius:width/2
                 color:{
-                    if(model.state===Element.Active){return 'blue'}
-                    if(model.state===Element.Inactive){return 'red'}
-                    if(model.state===Element.Invalid){return 'white'}
+                    if(model.state===Element.Active){return '#8ab8b6'}
+                    if(model.state===Element.Inactive){return '#d5b29c'}
+                    if(model.state===Element.Invalid){return 'black'}
                 }
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter

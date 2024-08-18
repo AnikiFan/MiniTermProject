@@ -12,7 +12,7 @@ public:
     const T&operator[](long long i)const;
     long long length()const;
     void push_back(const T& value);
-    void swap(long long x,long long y);
+    virtual void swap(long long x,long long y);
     void empty();
 protected:
     /// @brief 指向元素指针

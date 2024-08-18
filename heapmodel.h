@@ -15,8 +15,11 @@ public:
     explicit HeapModel(const char*const,QObject*parent=nullptr);
     ~HeapModel();
     void reload(const char*const);
+    void swap(long long x,long long y) override;
     friend HeapListModel;
     friend HeapTableModel;
+public slots:
+    void start();
 };
 
 #endif // HEAPMODEL_H

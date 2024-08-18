@@ -54,7 +54,7 @@ inline void Heap<T>::sort()
     build();
     while(heapsz>1){
         // cout<<"heapsize:"<<heapsz<<endl;
-        Vector<T>::swap(0,--heapsz);
+        this->swap(0,--heapsz);
         maintain(0);
     }
     sorted=true;
@@ -95,14 +95,14 @@ inline void Heap<T>::maintain(long long i)
         if(rchild(i)==null){
             if(cmp(Vector<T>::elem[i],Vector<T>::elem[lchild(i)])){
                 // cout<<"case 1"<<endl;
-                Vector<T>::swap(i,lchild(i));
+                this->swap(i,lchild(i));
                 i = lchild(i);
                 continue;
             }
         }else if(lchild(i)==null){
             if(cmp(Vector<T>::elem[i],Vector<T>::elem[rchild(i)])){
                 // cout<<"case 2"<<endl;
-                Vector<T>::swap(i,rchild(i));
+                this->swap(i,rchild(i));
                 i = rchild(i);
                 continue;
             }
@@ -110,14 +110,14 @@ inline void Heap<T>::maintain(long long i)
             if(cmp(Vector<T>::elem[i],Vector<T>::elem[lchild(i)])&&
                 cmp(Vector<T>::elem[rchild(i)],Vector<T>::elem[lchild(i)])){
                 // cout<<"case 3"<<endl;
-                Vector<T>::swap(i,lchild(i));
+                this->swap(i,lchild(i));
                 i = lchild(i);
                 continue;
             }
             if(cmp(Vector<T>::elem[i],Vector<T>::elem[rchild(i)])
                 &&cmp(Vector<T>::elem[lchild(i)],Vector<T>::elem[rchild(i)])){
                 // cout<<"case 4"<<endl;
-                Vector<T>::swap(i,rchild(i));
+                this->swap(i,rchild(i));
                 i = rchild(i);
                 continue;
             }
