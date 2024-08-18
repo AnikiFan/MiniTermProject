@@ -17,6 +17,7 @@ public:
     ~HeapModel();
     void reload(const char*const);
     void swap(long long x,long long y) override;
+    void shrink() override;
     friend HeapListModel;
     friend HeapTableModel;
     virtual QModelIndex index(int row, int column,
@@ -36,7 +37,8 @@ protected:
 public slots:
     void start();
 signals:
-    void elementSwaped(long long x,long long y);
+    void elementValueChanged(long long x,long long y);
+    void elementStateChanged(long long i);
 };
 
 #endif // HEAPMODEL_H

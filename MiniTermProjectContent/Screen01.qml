@@ -840,6 +840,8 @@ Rectangle {
 
             color:"white"
             Rectangle{
+                border.width: 5
+                border.color: 'black'
                 visible: model.state===Element.Invalid?false:true
                 width: parent.width>parent.height?parent.height:parent.width
                 height:width
@@ -852,8 +854,13 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 Text{
-                anchors.centerIn: parent
-                text:model.value
+                    anchors.centerIn: parent
+                    text:(model.value).toString()
+                    anchors.fill: parent
+                    wrapMode: Text.WrapAnywhere
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    anchors.margins: parent.border.width
                 }
 
             }

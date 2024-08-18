@@ -32,7 +32,8 @@ signals:
     void rowNumberChanged();
     void colNumberChanged();
 public slots:
-    void onElementSwaped(long long x,long long y);
+    void onElementValueChanged(long long x,long long y);
+    void onElementStateChanged(long long i);
 protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 };

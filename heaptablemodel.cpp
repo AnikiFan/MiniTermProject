@@ -9,7 +9,8 @@ HeapTableModel::HeapTableModel(HeapModel *base, QObject *parent)
 {
     m_rowNumber = formatter.rowNum();
     m_colNumber = formatter.colNum();
-    QObject::connect(base,&HeapModel::elementSwaped,this,&HeapTableModel::onElementSwaped);
+    QObject::connect(base,&HeapModel::elementValueChanged,this,&HeapTableModel::onElementValueChanged);
+    QObject::connect(base,&HeapModel::elementStateChanged,this,&HeapTableModel::onElementStateChanged);
 }
 
 /// @brief 析构函数
@@ -68,12 +69,19 @@ QHash<int, QByteArray> HeapTableModel::roleNames() const
 {
     return heap->roleNames();
 }
-void HeapTableModel::onElementSwaped(long long x, long long y)
+void HeapTableModel::onElementValueChanged(long long x, long long y)
 {
     long long r,c;
     formatter.transform(x,r,c);
     emit dataChanged(createIndex(r,c),createIndex(r,c));
     formatter.transform(y,r,c);
+    emit dataChanged(createIndex(r,c),createIndex(r,c));
+    return;
+}
+void HeapTableModel::onElementStateChanged(long long i)
+{
+    long long r,c;
+    formatter.transform(i,r,c);
     emit dataChanged(createIndex(r,c),createIndex(r,c));
     return;
 }

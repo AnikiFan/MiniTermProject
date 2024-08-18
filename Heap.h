@@ -14,8 +14,8 @@ public:
     /// @brief 标记是否已排序
     bool sorted=false;
     void sort();
-private:
-    void shrink();
+protected:
+    virtual void shrink() ;
     /// @brief 用于代表空节点
     const long long null=-1LL;
     bool (*cmp)(const T&,const T&);

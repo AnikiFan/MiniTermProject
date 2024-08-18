@@ -19,7 +19,8 @@ private:
     /// @brief 指向所要可视化的堆
     HeapModel * heap;
 public slots:
-    void onElementSwaped(long long x,long long y);
+    void onElementValueChanged(long long x,long long y);
+    void onElementStateChanged(long long i);
 protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 };

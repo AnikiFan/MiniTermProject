@@ -82,10 +82,18 @@ void HeapModel::swap(long long x, long long y)
 {
     //qDebug()<<x<<"   "<<y<<"\n";
     Vector<Element>::swap(x,y);
-    emit elementSwaped(x,y);
+    emit elementValueChanged(x,y);
     QEventLoop loop;
     QTimer::singleShot(1000, &loop, &QEventLoop::quit);  // 1000 毫秒 = 1 秒
     loop.exec();  // 进入事件循环，等待 QTimer 触发
+    return;
+}
+
+void HeapModel::shrink()
+{
+    Heap<Element>::shrink();
+    elem[heapsz].state=Element::Inactive;
+    emit elementStateChanged(heapsz);
     return;
 }
 
