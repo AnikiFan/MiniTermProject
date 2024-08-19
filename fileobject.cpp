@@ -1,4 +1,5 @@
 #include "fileobject.h"
+#include "heapmodel.h"
 #include <QUrl>
 #include <QFile>
 #include <QTextStream>
@@ -48,3 +49,14 @@ QString FileObject::source()
 {
     return m_source;
 }
+
+QString FileObject::result()
+{
+    QString result;
+    for(long long i{0};i<target->len;i++){
+        result += QString::number((*target)[i].value);
+        if(i!=target->len-1){result+=' ';}
+    }
+    return result;
+}
+

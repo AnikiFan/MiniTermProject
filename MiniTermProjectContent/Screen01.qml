@@ -458,7 +458,8 @@ Rectangle {
             font.family: "Microsoft YaHei"
             font.bold: true
             onClicked: {
-                mainWindow.pause()
+                if(HeapModel.finished){}
+                else{mainWindow.pause()}
             }
         }
 
@@ -539,13 +540,151 @@ Rectangle {
             }
         }
     }
+
+    Connections{
+        target:HeapModel
+        onSwapping:{
+            //console.log('start')
+            timer.restart()
+        }
+    }
+
+    Timer {
+            id: timer
+            interval: 3000/speedSlider.value**2  // 将计时器的间隔时间绑定到可调节的属性
+            repeat: false  // 使计时器重复触发
+            running: false  // 启动计时器
+            onTriggered: {
+                HeapModel.stop()
+               // console.log('finish')
+            }
+        }
+    Item {
+        id:heapShower
+        height: 100
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: controlPanel.top
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        visible: parent.state === 'algo'
+        focus:parent.state === 'algo'&&!bluredBackground.visible?true:false
+        Keys.onPressed: (event) =>{
+                            if(event.key===Qt.Key_Plus||event.key===Qt.Key_Equal){
+                                heapScrollBar.increase()
+                                event.accepted = true
+                            }
+                            else if(event.key===Qt.Key_Minus||event.key===Qt.Key_Underscore){
+                                heapScrollBar.decrease()
+                                event.accepted = true
+                            }
+                            else event.accepted = false
+                        }
+            ListView {
+                id:heapListView
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 4
+                clip: true
+                orientation: ListView.Horizontal
+                model:HeapListModel
+                delegate: Rectangle {
+                    border.width: 5
+                    border.color: 'black'
+                    width: 80
+                    height: 80
+                    color:{
+                        if(model.state===Element.Active){return '#8ab8b6'}
+                        if(model.state===Element.Inactive){return '#d5b29c'}
+                        if(model.state===Element.Invalid){return 'black'}
+                        if(model.state===Element.Changing){return'#f9ba1c'}
+                    }
+                    visible: model.state===Element.Invalid?false:true
+                    Text{
+                        property int number:model.value
+                        anchors.centerIn: parent
+                        text:(number).toString()
+                        anchors.fill: parent
+                        wrapMode: Text.WrapAnywhere
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.margins: parent.border.width
+                    }
+                }
+                ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
+            }
+    }
+    TableView {
+        id:heapTable
+        visible:parent.state==="algo"
+        anchors.left: parent.left
+        anchors.bottom: heapShower.top
+        anchors.top: parent.top
+        anchors.right:parent.right
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
+        columnSpacing: 0
+        rowSpacing: 0
+        clip: true
+        // rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber<100?100:height/HeapTableModel.rowNumber}
+        // columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber<100?100:width/HeapTableModel.colNumber}
+        rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
+        columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
+        model:HeapTableModel
+        delegate: Rectangle {
+
+            color:"white"
+            Rectangle{
+                border.width: 5
+                border.color: 'black'
+                visible: model.state===Element.Invalid?false:true
+                width: parent.width>parent.height?parent.height:parent.width
+                height:width
+                radius:width/2
+                color:{
+                    if(model.state===Element.Active){return '#8ab8b6'}
+                    if(model.state===Element.Inactive){return '#d5b29c'}
+                    if(model.state===Element.Invalid){return 'black'}
+                    if(model.state===Element.Changing){return'#f9ba1c'}
+                }
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                Text{
+                    property int number:model.value
+                    anchors.centerIn: parent
+                    text:(number).toString()
+                    anchors.fill: parent
+                    wrapMode: Text.WrapAnywhere
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    anchors.margins: parent.border.width
+                }
+
+            }
+        }
+        ScrollBar.vertical: ScrollBar {
+            id:vbar
+            visible:false
+        }
+        ScrollBar.horizontal: ScrollBar {
+            id:hbar
+            visible:false
+        }
+        focus:parent.state==='algo'&&!bluredBackground.visible
+        Keys.onLeftPressed: hbar.decrease()
+        Keys.onRightPressed: hbar.increase()
+        Keys.onUpPressed: vbar.decrease()
+        Keys.onDownPressed: vbar.increase()
+    }
     Rectangle {
         id: bluredBackground
         visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen
         color: "#ffffff"
         border.width: 0
         anchors.fill: parent
-        opacity: 0.698
+        opacity: 0.9
 
         Page {
             id: questionPage
@@ -784,7 +923,11 @@ Rectangle {
                             wrapMode: TextInput.Wrap
                             anchors.fill: parent
                             readOnly: true
-                            text:"testttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+                            text:FileObject.result()
+                            font.pixelSize: 20
+                            font.weight: Font.Black
+                            font.family: "Microsoft YaHei"
+                            font.bold: true
                         }
                     }
                 }
@@ -847,143 +990,6 @@ Rectangle {
                 }
             }
         }
-    }
-    Connections{
-        target:HeapModel
-        onSwapping:{
-            //console.log('start')
-            timer.restart()
-        }
-    }
-
-    Timer {
-            id: timer
-            interval: 3000/speedSlider.value**2  // 将计时器的间隔时间绑定到可调节的属性
-            repeat: false  // 使计时器重复触发
-            running: false  // 启动计时器
-            onTriggered: {
-                HeapModel.stop()
-               // console.log('finish')
-            }
-        }
-    Item {
-        id:heapShower
-        height: 100
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: controlPanel.top
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        visible: parent.state === 'algo'?true:false
-        focus:parent.state === 'algo'&&!bluredBackground.visible?true:false
-        Keys.onPressed: (event) =>{
-                            if(event.key===Qt.Key_Plus||event.key===Qt.Key_Equal){
-                                heapScrollBar.increase()
-                                event.accepted = true
-                            }
-                            else if(event.key===Qt.Key_Minus||event.key===Qt.Key_Underscore){
-                                heapScrollBar.decrease()
-                                event.accepted = true
-                            }
-                            else event.accepted = false
-                        }
-            ListView {
-                id:heapListView
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 4
-                clip: true
-                orientation: ListView.Horizontal
-                model:HeapListModel
-                delegate: Rectangle {
-                    border.width: 5
-                    border.color: 'black'
-                    width: 80
-                    height: 80
-                    color:{
-                        if(model.state===Element.Active){return '#8ab8b6'}
-                        if(model.state===Element.Inactive){return '#d5b29c'}
-                        if(model.state===Element.Invalid){return 'black'}
-                        if(model.state===Element.Changing){return'#f9ba1c'}
-                    }
-                    visible: model.state===Element.Invalid?false:true
-                    Text{
-                        property int number:model.value
-                        anchors.centerIn: parent
-                        text:(number).toString()
-                        anchors.fill: parent
-                        wrapMode: Text.WrapAnywhere
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.margins: parent.border.width
-                    }
-                }
-                ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
-            }
-    }
-    TableView {
-        id:heapTable
-        visible:parent.state==="algo"&&!bluredBackground.visible
-        anchors.left: parent.left
-        anchors.bottom: heapShower.top
-        anchors.top: parent.top
-        anchors.right:parent.right
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        anchors.topMargin: 0
-        anchors.bottomMargin: 0
-        columnSpacing: 0
-        rowSpacing: 0
-        clip: true
-        // rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber<100?100:height/HeapTableModel.rowNumber}
-        // columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber<100?100:width/HeapTableModel.colNumber}
-        rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
-        columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
-        model:HeapTableModel
-        delegate: Rectangle {
-
-            color:"white"
-            Rectangle{
-                border.width: 5
-                border.color: 'black'
-                visible: model.state===Element.Invalid?false:true
-                width: parent.width>parent.height?parent.height:parent.width
-                height:width
-                radius:width/2
-                color:{
-                    if(model.state===Element.Active){return '#8ab8b6'}
-                    if(model.state===Element.Inactive){return '#d5b29c'}
-                    if(model.state===Element.Invalid){return 'black'}
-                    if(model.state===Element.Changing){return'#f9ba1c'}
-                }
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                Text{
-                    property int number:model.value
-                    anchors.centerIn: parent
-                    text:(number).toString()
-                    anchors.fill: parent
-                    wrapMode: Text.WrapAnywhere
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    anchors.margins: parent.border.width
-                }
-
-            }
-        }
-        ScrollBar.vertical: ScrollBar {
-            id:vbar
-            visible:false
-        }
-        ScrollBar.horizontal: ScrollBar {
-            id:hbar
-            visible:false
-        }
-        focus:parent.state==='algo'&&!bluredBackground.visible
-        Keys.onLeftPressed: hbar.decrease()
-        Keys.onRightPressed: hbar.increase()
-        Keys.onUpPressed: vbar.decrease()
-        Keys.onDownPressed: vbar.increase()
     }
     states: [
         State {

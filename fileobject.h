@@ -13,8 +13,14 @@ public:
     Q_INVOKABLE bool write(const QString& data);
     void setSource(const QString&source);
     QString source();
+    QString result() const;
+    void setResult(const QString &newResult);
+public slots:
+    QString result();
 signals:
     void sourceChanged();
+    void resultChanged();
+
 private:
     QString m_source;
     HeapModel* target;

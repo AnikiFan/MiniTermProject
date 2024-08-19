@@ -8,6 +8,7 @@
 #include<QEventLoop>
 class HeapListModel;
 class HeapTableModel;
+class FileObject;
 /// @brief 用于存放待可视化的堆，并负责发送相应的signals
 class HeapModel:public QAbstractItemModel, Heap<Element>
 {
@@ -27,6 +28,7 @@ public:
     void shrink() override;
     friend HeapListModel;
     friend HeapTableModel;
+    friend FileObject;
     virtual QModelIndex index(int row, int column,
                                           const QModelIndex &parent = QModelIndex()) const override;
     virtual QModelIndex parent(const QModelIndex &child) const override;
