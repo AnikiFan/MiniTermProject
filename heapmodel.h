@@ -15,6 +15,7 @@ class HeapModel:public QAbstractItemModel, Heap<Element>
     Q_PROPERTY(bool pause READ pause WRITE setpause NOTIFY pauseChanged FINAL)
     Q_PROPERTY(bool pauseWhenSwapping READ pauseWhenSwapping WRITE setPauseWhenSwapping NOTIFY pauseWhenSwappingChanged FINAL)
     Q_PROPERTY(bool quit READ quit WRITE setQuit NOTIFY quitChanged FINAL)
+    Q_PROPERTY(bool finished READ finished WRITE setFinished NOTIFY finishedChanged FINAL)
 public:
     explicit HeapModel(QObject*parent = nullptr);
     explicit HeapModel(const char*const,QObject*parent=nullptr);
@@ -42,6 +43,10 @@ public:
     void setQuit(bool newQuit);
     void maintain(long long i)override;
     void build()override;
+
+    bool finished() const;
+    void setFinished(bool newFinished);
+
 protected:
     enum RoleNames{
         ValueRole = Qt::UserRole,
@@ -66,6 +71,7 @@ signals:
 
     void quitChanged();
     void restarted();
+    void finishedChanged();
 
 private:
     QEventLoop loop;
@@ -73,6 +79,7 @@ private:
     bool m_pauseWhenSwapping;
     bool m_pause;
     bool m_quit=false;
+    bool m_finished=false;
 };
 
 #endif // HEAPMODEL_H

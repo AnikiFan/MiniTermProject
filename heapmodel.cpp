@@ -97,9 +97,12 @@ void HeapModel::reload(const char * const p)
 void HeapModel::restart()
 {
     qDebug()<<"\n\nrestart";
-    loop.processEvents();
+    //loop.processEvents();
     heapsz = len;
     sorted = false;
+    setFinished(false);
+    setPauseWhenSwapping(false);
+    setpause(true);
     for(long long i{0};i<len;++i){elem[i]=raw[i];}
     m_quit = false;
     emit restarted();
@@ -154,6 +157,7 @@ void HeapModel::sort()
         if(heapsz){maintain(0);};
     }
     sorted=true;
+    setFinished(true);
     qDebug()<<"sort complete";
     if(m_quit){
         qDebug()<<"sort:quit sort"<<loop.isRunning();
@@ -334,4 +338,17 @@ void HeapModel::build()
         maintain(i);
     }
     return;
+}
+
+bool HeapModel::finished() const
+{
+    return m_finished;
+}
+
+void HeapModel::setFinished(bool newFinished)
+{
+    if (m_finished == newFinished)
+        return;
+    m_finished = newFinished;
+    emit finishedChanged();
 }

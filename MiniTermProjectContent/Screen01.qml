@@ -414,18 +414,45 @@ Rectangle {
         }
 
         RoundButton {
+            function startBottonText(){
+                if(HeapModel.finished){
+                    return 'COMPLETE!';
+                }else if(HeapModel.pause){
+                    return '▶';
+                }else{
+                    return "STOP";
+                }
+            }
+            function startBottonTextFontsize(){
+                if(HeapModel.finished){
+                    return 35;
+                }else if(HeapModel.pause){
+                    return 125;
+                }else{
+                    return 70;
+                }
+            }
+            function startBottonColor(){
+                if(HeapModel.finished){
+                    return "#d69545";
+                }else if(HeapModel.pause){
+                    return "#d69545";
+                }else{
+                    return "#e54a4a";
+                }
+            }
             id: startButton
             width: 240
             radius: 10
-            text: HeapModel.pause? "▶":"STOP"
+            text:startBottonText()
             visible:mainWindow.state==="algo"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            font.pixelSize: HeapModel.pause?125:70
-            palette.button: HeapModel.pause?"#d69545":"#e54a4a"
+            font.pixelSize: startBottonTextFontsize()
+            palette.button: startBottonColor()
             font.weight: Font.Black
             font.italic: false
             font.family: "Microsoft YaHei"
@@ -488,24 +515,27 @@ Rectangle {
             font.bold: true
             anchors.right:startButton.left
             onClicked: {
-                HeapModel.quit = true
-                if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
-                    console.log('case1')
+                if(HeapModel.finished){
+                    HeapModel.restart()
+                }
+                else{
+                    HeapModel.quit = true
+                    if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
+                        console.log('case1')
+                        HeapModel.stop()
+                        HeapModel.pause = false
+                        HeapModel.pauseWhenSwapping = false
+                    }
+                    else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
+                        console.log('case2')
+                        timer.start()
+                        HeapModel.pause = false
+                        HeapModel.pauseWhenSwapping = false
+                    }
+                    else{console.log('case 3')}
                     HeapModel.stop()
-                    HeapModel.pause = false
-                    HeapModel.pauseWhenSwapping = false
+                    timer.stop()
                 }
-                else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
-                    console.log('case2')
-                    timer.start()
-                    HeapModel.pause = false
-                    HeapModel.pauseWhenSwapping = false
-                }
-                else{console.log('case 3')}
-                HeapModel.stop()
-                timer.stop()
-                HeapModel.pause=true
-                HeapModel.pauseWhenSwapping = false
             }
         }
     }
