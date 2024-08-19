@@ -8,6 +8,7 @@ HeapListModel::HeapListModel(HeapModel*base, QObject *parent)
 {
     QObject::connect(base,&HeapModel::elementValueChanged,this,&HeapListModel::onElementValueChanged);
     QObject::connect(base,&HeapModel::elementStateChanged,this,&HeapListModel::onElementStateChanged);
+    QObject::connect(base,&HeapModel::restarted,this,&HeapListModel::onReloaded);
 }
 
 /// @brief 析构函数
@@ -54,6 +55,11 @@ void HeapListModel::onElementValueChanged(long long x, long long y)
 void HeapListModel::onElementStateChanged(long long i)
 {
     emit dataChanged(index(i),index(i));
+}
+
+void HeapListModel::onReloaded()
+{
+    emit dataChanged(index(0),index(heap->len-1));
 }
 QHash<int, QByteArray> HeapListModel::roleNames() const
 {

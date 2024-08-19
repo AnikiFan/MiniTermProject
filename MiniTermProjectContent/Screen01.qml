@@ -33,6 +33,30 @@ Rectangle {
     //     else if(controlPanel.questionOpen)return[questionPage]
     //     else return[controlPanel,heap]
     // }
+    function pause(){
+                        if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
+                            HeapModel.stop()
+                            HeapModel.pause = false
+                            HeapModel.pauseWhenSwapping = false
+                        }
+                        else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
+                            timer.start()
+                            HeapModel.pause = false
+                            HeapModel.pauseWhenSwapping = false
+                        }
+                        else{
+                            if(timer.running){
+                                HeapModel.pause = true
+                                HeapModel.pauseWhenSwapping = true
+                                timer.stop()
+                            }
+                            else{
+                                HeapModel.pause = true
+                                HeapModel.pauseWhenSwapping = false
+                            }
+                        }
+    }
+
     Image {
         id: backgroundImage
         visible: mainWindow.state === "home" ? true : false
@@ -193,6 +217,9 @@ Rectangle {
                     target: algoScreenButton
                     onClicked:{
                         menu.algoScene = true
+                        HeapModel.pause = true
+                        HeapModel.pauseWhenSwapping = false
+                        HeapModel.wait()
                         HeapModel.start()
                     }
                 }
@@ -390,23 +417,21 @@ Rectangle {
             id: startButton
             width: 240
             radius: 10
-            text: timer.pause? "▶":"STOP"
+            text: HeapModel.pause? "▶":"STOP"
             visible:mainWindow.state==="algo"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            font.pixelSize: timer.pause?125:70
-            palette.button: timer.pause?"#d69545":"#e54a4a"
+            font.pixelSize: HeapModel.pause?125:70
+            palette.button: HeapModel.pause?"#d69545":"#e54a4a"
             font.weight: Font.Black
             font.italic: false
             font.family: "Microsoft YaHei"
             font.bold: true
             onClicked: {
-                if(timer.pause){timer.start()}
-                else{timer.stop()}
-                timer.pause=!timer.pause
+                mainWindow.pause()
             }
         }
 
@@ -462,6 +487,26 @@ Rectangle {
             font.family: "Microsoft YaHei"
             font.bold: true
             anchors.right:startButton.left
+            onClicked: {
+                HeapModel.quit = true
+                if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
+                    console.log('case1')
+                    HeapModel.stop()
+                    HeapModel.pause = false
+                    HeapModel.pauseWhenSwapping = false
+                }
+                else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
+                    console.log('case2')
+                    timer.start()
+                    HeapModel.pause = false
+                    HeapModel.pauseWhenSwapping = false
+                }
+                else{console.log('case 3')}
+                HeapModel.stop()
+                timer.stop()
+                HeapModel.pause=true
+                HeapModel.pauseWhenSwapping = false
+            }
         }
     }
     Rectangle {
@@ -782,7 +827,6 @@ Rectangle {
     }
 
     Timer {
-            property bool pause:true
             id: timer
             interval: 3000/speedSlider.value**2  // 将计时器的间隔时间绑定到可调节的属性
             repeat: false  // 使计时器重复触发
@@ -861,6 +905,8 @@ Rectangle {
         columnSpacing: 0
         rowSpacing: 0
         clip: true
+        // rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber<100?100:height/HeapTableModel.rowNumber}
+        // columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber<100?100:width/HeapTableModel.colNumber}
         rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
         columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
         model:HeapTableModel

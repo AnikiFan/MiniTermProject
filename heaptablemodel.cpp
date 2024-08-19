@@ -11,6 +11,7 @@ HeapTableModel::HeapTableModel(HeapModel *base, QObject *parent)
     m_colNumber = formatter.colNum();
     QObject::connect(base,&HeapModel::elementValueChanged,this,&HeapTableModel::onElementValueChanged);
     QObject::connect(base,&HeapModel::elementStateChanged,this,&HeapTableModel::onElementStateChanged);
+    QObject::connect(base,&HeapModel::restarted,this,&HeapTableModel::onReloaded);
 }
 
 /// @brief 析构函数
@@ -84,4 +85,9 @@ void HeapTableModel::onElementStateChanged(long long i)
     formatter.transform(i,r,c);
     emit dataChanged(createIndex(r,c),createIndex(r,c));
     return;
+}
+
+void HeapTableModel::onReloaded()
+{
+    emit dataChanged(createIndex(0,0),createIndex(formatter.rowNum()-1,formatter.colNum()-1));
 }

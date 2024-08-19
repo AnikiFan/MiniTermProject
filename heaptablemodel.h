@@ -34,6 +34,7 @@ signals:
 public slots:
     void onElementValueChanged(long long x,long long y);
     void onElementStateChanged(long long i);
+    void onReloaded();
 protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 };

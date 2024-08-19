@@ -7,6 +7,8 @@ class Element
     Q_GADGET
 public:
     Element();
+    Element(const Element& other);
+    Element& operator=(const Element& other) ;
     ~Element();
     /// @brief 位序是否已经确定
     /// @brief 用于比较的键值

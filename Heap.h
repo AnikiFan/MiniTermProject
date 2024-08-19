@@ -13,7 +13,7 @@ public:
     ~Heap();
     /// @brief 标记是否已排序
     bool sorted=false;
-    void sort();
+    virtual void sort();
 protected:
     virtual void shrink() ;
     /// @brief 用于代表空节点
@@ -23,8 +23,8 @@ protected:
     long long rchild(long long i)const;
     /// @brief 堆的大小（elem[0]也是一个元素，没有设置哨兵）
     long long heapsz;
-    void maintain(long long i);
-    void build();
+    virtual void maintain(long long i);
+    virtual void build();
 };
 
 /// @brief 构造函数
