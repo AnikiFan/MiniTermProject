@@ -15,7 +15,8 @@ public:
     enum State{
         Active = 0,
         Inactive,
-        Invalid
+        Invalid,
+        Changing
     };
     State state;
     Element(long long val,State st=Active);

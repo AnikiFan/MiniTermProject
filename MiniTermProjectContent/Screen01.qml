@@ -802,6 +802,7 @@ Rectangle {
                         if(model.state===Element.Active){return '#8ab8b6'}
                         if(model.state===Element.Inactive){return '#d5b29c'}
                         if(model.state===Element.Invalid){return 'black'}
+                        if(model.state===Element.Changing){return'#f9ba1c'}
                     }
                     visible: model.state===Element.Invalid?false:true
                     Text{
@@ -850,6 +851,7 @@ Rectangle {
                     if(model.state===Element.Active){return '#8ab8b6'}
                     if(model.state===Element.Inactive){return '#d5b29c'}
                     if(model.state===Element.Invalid){return 'black'}
+                    if(model.state===Element.Changing){return'#f9ba1c'}
                 }
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
