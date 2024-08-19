@@ -191,7 +191,10 @@ Rectangle {
 
                 Connections {
                     target: algoScreenButton
-                    onClicked: menu.algoScene = true
+                    onClicked:{
+                        menu.algoScene = true
+                        HeapModel.start()
+                    }
                 }
             }
 
@@ -387,22 +390,23 @@ Rectangle {
             id: startButton
             width: 240
             radius: 10
-            text: "▶"
+            text: timer.pause? "▶":"STOP"
             visible:mainWindow.state==="algo"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.topMargin: 10
             anchors.bottomMargin: 10
-            font.pixelSize: 125
-            palette.button: "#d69545"
+            font.pixelSize: timer.pause?125:70
+            palette.button: timer.pause?"#d69545":"#e54a4a"
             font.weight: Font.Black
             font.italic: false
             font.family: "Microsoft YaHei"
             font.bold: true
             onClicked: {
-                console.log('startButton clicked')
-                HeapModel.start()
+                if(timer.pause){timer.start()}
+                else{timer.stop()}
+                timer.pause=!timer.pause
             }
         }
 
@@ -416,6 +420,11 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.topMargin: 10
             anchors.bottomMargin: 10
+            from: 1   // 最小速率倍率
+            to: 5     // 最大速率倍率
+            value: 1.0  // 默认值，1.0表示正常速率
+            stepSize: 0.1
+           // onValueChanged:{console.log(value)}
             background: Rectangle {
                     x: speedSlider.leftPadding
                     y: speedSlider.topPadding + speedSlider.availableHeight / 2 - height / 2
@@ -764,6 +773,25 @@ Rectangle {
             }
         }
     }
+    Connections{
+        target:HeapModel
+        onSwapping:{
+            //console.log('start')
+            timer.restart()
+        }
+    }
+
+    Timer {
+            property bool pause:true
+            id: timer
+            interval: 3000/speedSlider.value**2  // 将计时器的间隔时间绑定到可调节的属性
+            repeat: false  // 使计时器重复触发
+            running: false  // 启动计时器
+            onTriggered: {
+                HeapModel.stop()
+               // console.log('finish')
+            }
+        }
     Item {
         id:heapShower
         height: 100
@@ -806,8 +834,9 @@ Rectangle {
                     }
                     visible: model.state===Element.Invalid?false:true
                     Text{
+                        property int number:model.value
                         anchors.centerIn: parent
-                        text:(model.value).toString()
+                        text:(number).toString()
                         anchors.fill: parent
                         wrapMode: Text.WrapAnywhere
                         horizontalAlignment: Text.AlignHCenter
@@ -815,7 +844,6 @@ Rectangle {
                         anchors.margins: parent.border.width
                     }
                 }
-                Component.onCompleted: {console.log(HeapListModel)}
                 ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
             }
     }
@@ -836,7 +864,6 @@ Rectangle {
         rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
         columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
         model:HeapTableModel
-        Component.onCompleted: {console.log(height,width,HeapTableModel.rowNumber,HeapTableModel.colNumber)}
         delegate: Rectangle {
 
             color:"white"
@@ -856,8 +883,9 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 Text{
+                    property int number:model.value
                     anchors.centerIn: parent
-                    text:(model.value).toString()
+                    text:(number).toString()
                     anchors.fill: parent
                     wrapMode: Text.WrapAnywhere
                     horizontalAlignment: Text.AlignHCenter

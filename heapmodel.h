@@ -5,6 +5,7 @@
 #include <QtCore>
 #include "Heap.h"
 #include "element.h"
+#include<QEventLoop>
 class HeapListModel;
 class HeapTableModel;
 /// @brief 用于存放待可视化的堆，并负责发送相应的signals
@@ -36,9 +37,14 @@ protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 public slots:
     void start();
+    void stop();
 signals:
     void elementValueChanged(long long x,long long y);
     void elementStateChanged(long long i);
+    void swapping();
+    void Continue();
+private:
+    QEventLoop loop;
 };
 
 #endif // HEAPMODEL_H

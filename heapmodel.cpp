@@ -1,8 +1,7 @@
 #include "heapmodel.h"
 #include "element.h"
 #include<QDebug>
-#include<QEventLoop>
-#include<QTimer>
+
 /// @brief 构造函数，附带一个简单的样例
 /// @param parent 
 HeapModel::HeapModel(QObject*parent):Heap<Element>{
@@ -24,6 +23,7 @@ HeapModel::HeapModel(QObject*parent):Heap<Element>{
 {
     m_roleNames[ValueRole] = "value";
     m_roleNames[StateRole] = "state";
+    connect(this, &HeapModel::Continue, &loop, &QEventLoop::quit);
 }
 /// @brief QML系统所需的函数
 /// @return
@@ -81,19 +81,25 @@ void HeapModel::reload(const char * const p)
 void HeapModel::swap(long long x, long long y)
 {
     //qDebug()<<x<<"   "<<y<<"\n";
-    Vector<Element>::swap(x,y);
-    emit elementValueChanged(x,y);
+    emit swapping();
+
     elem[x].state = Element::Changing;
     emit elementStateChanged(x);
     elem[y].state = Element::Changing;
     emit elementStateChanged(y);
-    QEventLoop loop;
-    QTimer::singleShot(1000, &loop, &QEventLoop::quit);  // 1000 毫秒 = 1 秒
-    loop.exec();  // 进入事件循环，等待 QTimer 触发
+
+
+   // qDebug()<<"loop start\n";
+    loop.exec();
+   // qDebug()<<"loop end\n";
+    Vector<Element>::swap(x,y);
+    emit elementValueChanged(x,y);
+
     elem[x].state = Element::Active;
     emit elementStateChanged(x);
     elem[y].state = Element::Active;
     emit elementStateChanged(y);
+
     return;
 }
 
@@ -134,4 +140,9 @@ void HeapModel::start()
 {
     Heap<Element>::sort();
     return;
+}
+
+void HeapModel::stop()
+{
+    emit Continue();
 }
