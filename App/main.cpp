@@ -3,7 +3,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-
+#include<QIcon>
 #include "autogen/environment.h"
 #include"heapmodel.h"
 #include"heaplistmodel.h"
@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(mainQmlFile);
-
     HeapModel *heapModel = new HeapModel(&app);
     qmlRegisterSingletonInstance("HeapModel",1,0,"HeapModel",heapModel);
     HeapListModel *heapListModel = new HeapListModel(heapModel,heapModel);

@@ -21,7 +21,7 @@ qt6_add_resources(MiniTermProjectContent MiniTermProjectContentBigResource
     PREFIX "/qt/qml/MiniTermProjectContent"
     VERSION 1.0
     FILES 
-    "fonts/msyh.ttf"
     "fonts/msyhbd.ttf"
+    "fonts/msyh.ttf"
     "fonts/msyhl.ttf"
 )

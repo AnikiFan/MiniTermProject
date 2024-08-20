@@ -27,7 +27,7 @@ Rectangle {
     visible: true
     color: "#e6e6e6"
     state: "home"
-    Keys.forwardTo: [questionPage,importPage,exportPage,heapShower,controlPanel,returnButton,questionButton,heapTable,quitBotton]
+    Keys.forwardTo: [menu,questionPage,importPage,exportPage,heapShower,controlPanel,returnButton,questionButton,heapTable,quitBotton]
     // Keys.forwardTo:{
     //     if(mainWindow.state==='home')return[menu]
     //     else if(controlPanel.questionOpen)return[questionPage]
@@ -58,7 +58,7 @@ Rectangle {
     }
     Image {
         id: backgroundImage
-        visible: mainWindow.state === "home" ? true : false
+        visible: mainWindow.state === "home"
         anchors.fill: parent
         source: "qrc:/qtquickplugin/images/template_image.png"
         fillMode: Image.Stretch
@@ -69,13 +69,13 @@ Rectangle {
         y: 198
         width: 740
         height: 580
-        visible: mainWindow.state === "home" ? true : false
+        visible: mainWindow.state === "home"
         color: "#e6e6e6"
         radius: 20
         border.width: 0
         anchors.verticalCenter: parent.verticalCenter
         clip: true
-        focus: mainWindow.state === "home" ? true : false
+        focus: mainWindow.state === 'home'
         opacity: 0.6
         property bool appScene: false
         property bool algoScene: false
@@ -216,6 +216,8 @@ Rectangle {
                     heapTable.positionViewAtColumn((heapTable.columns-1)/2,TableView.AlignHCenter)
                     heapTable.positionViewAtRow(0,TableView.AlignTop)
                     if(HeapModel.firstClicked){
+                        controlPanel.questionOpen = true
+                        console.log(controlPanel.questionOpen)
                         HeapModel.firstClicked = false
                         HeapModel.pause = true
                         HeapModel.pauseWhenSwapping = false
@@ -268,11 +270,7 @@ Rectangle {
                         }
                     ]
                 }
-
-                Connections {
-                    target: quitBotton
-                    onClicked: Qt.quit()
-                }
+                onClicked: Qt.quit()
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
@@ -725,8 +723,7 @@ Rectangle {
 
         Page {
             id: questionPage
-            focus:true
-            //focus: controlPanel.questionOpen
+            focus: controlPanel.questionOpen
             visible: controlPanel.questionOpen
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){

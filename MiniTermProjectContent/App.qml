@@ -10,8 +10,9 @@ Window {
 
     visible: true
     visibility: Window.Maximized
-    title: "MiniTermProject"
-
+    title: "《数据结构与算法设计》课程设计"
+    minimumHeight:Constants.height
+    minimumWidth:Constants.width
     Screen01 {
         id: mainScreen
         anchors.fill:parent

@@ -7,8 +7,8 @@
 #include "qqmlextensionplugin.h"
 
 Q_IMPORT_QML_PLUGIN(QuickContainersPlugin)
-Q_IMPORT_QML_PLUGIN(MiniTermProjectContentPlugin)
 Q_IMPORT_QML_PLUGIN(MiniTermProjectPlugin)
+Q_IMPORT_QML_PLUGIN(MiniTermProjectContentPlugin)
 
 const char mainQmlFile[] = "qrc:/qt/qml/MiniTermProjectContent/App.qml";
 
