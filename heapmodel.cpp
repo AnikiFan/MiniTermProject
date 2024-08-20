@@ -73,29 +73,53 @@ HeapModel::~HeapModel()
 
 }
 
-void HeapModel::reload(const char * const p)
+void HeapModel::reload(const QString input)
 {
+    emit beginResetHeapModel();
     empty();
+    QByteArray byteArray = input.toUtf8();
+    const char*const p = byteArray.data();
     long long i{0};
     bool negative{false},isNumber{false};
     long long number{0};
-    while(p[i++]){
+    while(p[i]){
         if(p[i]=='-'){negative=true;}
-        else if(p[i]>='0'||p[i]<='9'){
+        else if(p[i]>='0'&&p[i]<='9'){
             isNumber=true;
             number *= 10;
             number += p[i]-'0';
         }else if(isNumber){
-            push_back(negative?-number:number);
+            push_back(negative?Element{-number,Element::Active}:Element{number,Element::Active});
             number = 0;
             isNumber = false;
         }else{negative = false;}
+        i++;
     }
+    if(isNumber){push_back(negative?Element{-number,Element::Active}:Element{number,Element::Active});}
+    qDebug()<<"input string"<<input;
+    qDebug().nospace()<<"input array:";
+    for(long long i{0};i<len;i++){qDebug().nospace()<<elem[i].value;}
+    qDebug()<<"";
+    delete []raw;
+    raw = new Element[len];
+    if(!raw){throw std::overflow_error("HeapModel::HeapModel");}
+    for(long long i{0};i<len;i++){raw[i]=elem[i];}
+    heapsz = len;
+    sorted = false;
+    setFinished(false);
+    setPauseWhenSwapping(false);
+    setpause(true);
+    setQuit(false);
+    setReloading(false);
+    emit restarted();
+    wait();
+    start();
     return;
 }
 
 void HeapModel::restart()
 {
+    emit beginResetHeapModel();
     qDebug()<<"\n\nrestart";
     //loop.processEvents();
     heapsz = len;
@@ -104,7 +128,7 @@ void HeapModel::restart()
     setPauseWhenSwapping(false);
     setpause(true);
     for(long long i{0};i<len;++i){elem[i]=raw[i];}
-    m_quit = false;
+    setQuit(false);
     emit restarted();
     wait();
     start();
@@ -140,15 +164,23 @@ void HeapModel::sort()
 {
     qDebug()<<"call sort";
     if(sorted){return;}
-    if(m_quit){
+    if(quit()){
         qDebug()<<"sort:quit sort"<<loop.isRunning();
+        if(reloading()){
+            emit getInputText();
+            return;
+        }
         restart();
         return;
     }
     build();
     while(heapsz){
-        if(m_quit){
+        if(quit()){
             qDebug()<<"sort:quit sort"<<loop.isRunning();
+            if(reloading()){
+                emit getInputText();
+                return;
+            }
             restart();
             return;
         }
@@ -159,8 +191,12 @@ void HeapModel::sort()
     sorted=true;
     setFinished(true);
     qDebug()<<"sort complete";
-    if(m_quit){
+    if(quit()){
         qDebug()<<"sort:quit sort"<<loop.isRunning();
+        if(reloading()){
+            emit getInputText();
+            return;
+        }
         restart();
         return;
     }
@@ -267,16 +303,12 @@ void HeapModel::setQuit(bool newQuit)
 
 void HeapModel::maintain(long long i)
 {
-    // cout<<"maintian("<<i<<")"<<endl;
     if(i<0||i>=heapsz){throw std::invalid_argument("Heap::maintian");};
     while(lchild(i)!=null||rchild(i)!=null){
-        // cout<<i<<endl;
-        // cout<<lchild(i)<<" "<<rchild(i)<<endl;
         if(rchild(i)==null){
             if(cmp(elem[i],elem[lchild(i)])){
-                // cout<<"case 1"<<endl;
                 this->swap(i,lchild(i));
-                if(m_quit){
+                if(quit()){
                     //reload();
                     qDebug()<<"maintain:quit sort";
                     return;
@@ -288,7 +320,7 @@ void HeapModel::maintain(long long i)
             if(cmp(elem[i],elem[rchild(i)])){
                 // cout<<"case 2"<<endl;
                 this->swap(i,rchild(i));
-                if(m_quit){
+                if(quit()){
                     //reload();
                     qDebug()<<"maintain:quit sort";
                     return;
@@ -301,7 +333,7 @@ void HeapModel::maintain(long long i)
                 cmp(elem[rchild(i)],elem[lchild(i)])){
                 // cout<<"case 3"<<endl;
                 this->swap(i,lchild(i));
-                if(m_quit){
+                if(quit()){
                     //reload();
                     qDebug()<<"maintain:quit sort";
                     return;
@@ -313,7 +345,7 @@ void HeapModel::maintain(long long i)
                 &&cmp(elem[lchild(i)],elem[rchild(i)])){
                 // cout<<"case 4"<<endl;
                 this->swap(i,rchild(i));
-                if(m_quit){
+                if(quit()){
                     //reload();
                     qDebug()<<"maintain:quit sort";
                     return;
@@ -351,4 +383,17 @@ void HeapModel::setFinished(bool newFinished)
         return;
     m_finished = newFinished;
     emit finishedChanged();
+}
+
+bool HeapModel::reloading() const
+{
+    return m_reloading;
+}
+
+void HeapModel::setReloading(bool newReloading)
+{
+    if (m_reloading == newReloading)
+        return;
+    m_reloading = newReloading;
+    emit reloadingChanged();
 }

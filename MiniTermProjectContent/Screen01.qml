@@ -385,6 +385,7 @@ Rectangle {
                 target: importButton
                 onClicked: {
                     controlPanel.importOpen=true
+                    mainWindow.pause()
                 }
             }
         }
@@ -405,11 +406,10 @@ Rectangle {
             font.weight: Font.Black
             font.family: "Microsoft YaHei"
             font.bold: true
-            Connections {
-                target: exportButton
-                onClicked: {
-                    controlPanel.exportOpen=true
-                }
+            onClicked: {
+                controlPanel.exportOpen=true
+                outputBox.text=FileObject.result()
+                mainWindow.pause()
             }
         }
 
@@ -828,6 +828,10 @@ Rectangle {
                             wrapMode: Text.Wrap
                             anchors.fill:inputBoxView
                             placeholderText: "请输入整数，用空格或回车分隔"
+                            font.pixelSize: 20
+                            font.weight: Font.Black
+                            font.family: "Microsoft YaHei"
+                            font.bold: true
                         }
                     }
                 }
@@ -865,6 +869,7 @@ Rectangle {
                             target: importCancelButton
                             onClicked: {
                                 controlPanel.importOpen=false
+                                inputBox.text = ''
                             }
                         }
                     }
@@ -882,12 +887,41 @@ Rectangle {
                             target: importCheckButton
                             onClicked: {
                                 controlPanel.importOpen=false
+                                if(HeapModel.finished){
+                                    HeapModel.reload(inputBox.text)
+                                }
+                                else{
+                                    HeapModel.reloading = true
+                                    HeapModel.quit = true
+                                    if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
+                                        console.log('case1')
+                                        HeapModel.stop()
+                                        HeapModel.pause = false
+                                        HeapModel.pauseWhenSwapping = false
+                                    }
+                                    else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
+                                        console.log('case2')
+                                        timer.start()
+                                        HeapModel.pause = false
+                                        HeapModel.pauseWhenSwapping = false
+                                    }
+                                    else{console.log('case 3')}
+                                    HeapModel.stop()
+                                    timer.stop()
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        Connections {
+              target: HeapModel
+              onGetInputText: {
+                  console.log('reload')
+                  HeapModel.reload(inputBox.text)
+              }
+          }
         Rectangle {
             id: exportPage
             Keys.onPressed: (event) =>{
@@ -920,10 +954,9 @@ Rectangle {
                         anchors.fill: parent
                         TextArea {
                             id:outputBox
-                            wrapMode: TextInput.Wrap
-                            anchors.fill: parent
+                            wrapMode: TextInput.WrapAtWordBoundaryOrAnywhere
+                            anchors.fill: outputBoxBackground
                             readOnly: true
-                            text:FileObject.result()
                             font.pixelSize: 20
                             font.weight: Font.Black
                             font.family: "Microsoft YaHei"

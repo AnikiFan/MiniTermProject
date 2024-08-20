@@ -53,10 +53,11 @@ QString FileObject::source()
 QString FileObject::result()
 {
     QString result;
-    for(long long i{0};i<target->len;i++){
-        result += QString::number((*target)[i].value);
-        if(i!=target->len-1){result+=' ';}
+    QStringList stringList;
+    for (int i = 0; i < target->len; ++i) {
+        stringList << QString::number(target->elem[i].value);
     }
-    return result;
+    qDebug()<<"output text:"<<stringList.join(" ");
+    return stringList.join(" ");
 }
 

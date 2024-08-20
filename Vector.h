@@ -160,7 +160,7 @@ inline void Vector<T>::swap(long long x, long long y)
 template<typename T>
 inline void Vector<T>::empty()
 {
-    delete elem;
+    delete[] elem;
     elem = nullptr;
     sz = 0;
     len = 0;
@@ -184,7 +184,7 @@ inline void Vector<T>::extend()
     sz = (size() == 0) ? 1 : 2*size();
     T* tmp = new T[sz];
     if(!tmp){throw std::overflow_error("Vector::extend");}
-    for(long long i=0;i<size();++i){tmp[i] = std::move(elem[i]);}
+    for(long long i=0;i<length();++i){tmp[i] = std::move(elem[i]);}
     delete[] elem;
     elem = tmp;
     return;

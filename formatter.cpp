@@ -62,3 +62,11 @@ void Formatter::transform(long long i,long long&r,long long&c)const
     //qDebug()<<"(1<<(row-r-1)):"<<(1<<(row-r-1))<<"    (i-(1<<r)+1):"<<(i-(1<<r)+1)<<"       (1<<(row-r)):"<<(1<<(row-r))<<"\n";
     return;
 }
+
+void Formatter::update(long long sz)
+{
+    size = sz;
+    row = static_cast<long long>(log2(sz))+1;
+    col = (1LL<<row)-1;
+    return;
+}

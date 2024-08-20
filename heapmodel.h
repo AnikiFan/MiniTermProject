@@ -17,12 +17,11 @@ class HeapModel:public QAbstractItemModel, Heap<Element>
     Q_PROPERTY(bool pauseWhenSwapping READ pauseWhenSwapping WRITE setPauseWhenSwapping NOTIFY pauseWhenSwappingChanged FINAL)
     Q_PROPERTY(bool quit READ quit WRITE setQuit NOTIFY quitChanged FINAL)
     Q_PROPERTY(bool finished READ finished WRITE setFinished NOTIFY finishedChanged FINAL)
+    Q_PROPERTY(bool reloading READ reloading WRITE setReloading NOTIFY reloadingChanged FINAL)
 public:
     explicit HeapModel(QObject*parent = nullptr);
     explicit HeapModel(const char*const,QObject*parent=nullptr);
     ~HeapModel();
-    void reload(const char*const);
-
     void swap(long long x,long long y) override;
     void sort()override;
     void shrink() override;
@@ -49,6 +48,9 @@ public:
     bool finished() const;
     void setFinished(bool newFinished);
 
+    bool reloading() const;
+    void setReloading(bool newReloading);
+
 protected:
     enum RoleNames{
         ValueRole = Qt::UserRole,
@@ -58,6 +60,7 @@ protected:
     QHash<int, QByteArray> m_roleNames;
     virtual QHash<int, QByteArray> roleNames() const override;
 public slots:
+    void reload(const QString);
     void start();
     void stop();
     void wait();
@@ -75,6 +78,9 @@ signals:
     void restarted();
     void finishedChanged();
 
+    void reloadingChanged();
+    void getInputText();
+    void beginResetHeapModel();
 private:
     QEventLoop loop;
     Element* raw;
@@ -82,6 +88,7 @@ private:
     bool m_pause;
     bool m_quit=false;
     bool m_finished=false;
+    bool m_reloading=false;
 };
 
 #endif // HEAPMODEL_H

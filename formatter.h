@@ -11,6 +11,7 @@ public:
     void transform(long long i,long long &r,long long&c)const;
     /// @brief 表示该位置没有对应的一维list中的元素
     const long long null = -1LL;
+    void update(long long sz);
 private:
     /// @brief 一维list的元素个数
     long long size;
