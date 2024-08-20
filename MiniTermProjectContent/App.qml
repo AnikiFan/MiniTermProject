@@ -9,10 +9,12 @@ Window {
     height: mainScreen.height
 
     visible: true
+    visibility: Window.Maximized
     title: "MiniTermProject"
 
     Screen01 {
         id: mainScreen
+        anchors.fill:parent
     }
 
 }

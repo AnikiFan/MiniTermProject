@@ -27,7 +27,7 @@ Rectangle {
     visible: true
     color: "#e6e6e6"
     state: "home"
-    Keys.forwardTo: [menu,bluredBackground,heapShower,controlPanel,heapTable]
+    Keys.forwardTo: [questionPage,importPage,exportPage,heapShower,controlPanel,returnButton,questionButton,heapTable,quitBotton]
     // Keys.forwardTo:{
     //     if(mainWindow.state==='home')return[menu]
     //     else if(controlPanel.questionOpen)return[questionPage]
@@ -660,15 +660,13 @@ Rectangle {
         clip: true
         rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber<100?100:height/HeapTableModel.rowNumber}
         columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber<100?100:width/HeapTableModel.colNumber}
-        Component.onCompleted: {
-            var centerColumn = Math.floor((columns-1) / 2); // 中间列索引
-            var visibleColumns = Math.floor(width / columnWidthProvider(centerColumn));
-            var columnToScrollTo = Math.max(0, centerColumn - Math.floor(visibleColumns / 2));
-
-            console.log(height,width,HeapTableModel.rowNumber,HeapTableModel.colNumber)
-
-            //positionViewAtColumn((columns-1)/2,TableView.AlignHCenter)
-            //positionViewAtRow(0,TableView.AlignTop)
+        Connections{
+            target: HeapTableModel
+            onFocusOnItem:function(r,c){
+                heapTable.positionViewAtColumn(c,TableView.AlignHCenter)
+                heapTable.positionViewAtRow(r,TableView.AlignVCenter)
+               // heapTable.positionViewAtCell(Qt.point(r, c), TableView.Center)
+            }
         }
 
         model:HeapTableModel
@@ -727,7 +725,8 @@ Rectangle {
 
         Page {
             id: questionPage
-            focus: controlPanel.questionOpen
+            focus:true
+            //focus: controlPanel.questionOpen
             visible: controlPanel.questionOpen
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){

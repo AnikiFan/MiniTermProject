@@ -31,6 +31,7 @@ private:
 signals:
     void rowNumberChanged();
     void colNumberChanged();
+    void focusOnItem(long long r,long long c);
 public slots:
     void onElementValueChanged(long long x,long long y);
     void onElementStateChanged(long long i);

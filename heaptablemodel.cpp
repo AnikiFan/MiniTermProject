@@ -73,11 +73,16 @@ QHash<int, QByteArray> HeapTableModel::roleNames() const
 }
 void HeapTableModel::onElementValueChanged(long long x, long long y)
 {
-    long long r,c;
+    long long r,c,centerR=0,centerC=0;
     formatter.transform(x,r,c);
     emit dataChanged(createIndex(r,c),createIndex(r,c));
+    centerR += r;
+    centerC += c;
     formatter.transform(y,r,c);
     emit dataChanged(createIndex(r,c),createIndex(r,c));
+    centerR += r;
+    centerC += c;
+    emit focusOnItem(centerR/2,centerC/2);
     return;
 }
 void HeapTableModel::onElementStateChanged(long long i)
