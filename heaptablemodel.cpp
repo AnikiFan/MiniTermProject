@@ -91,6 +91,10 @@ void HeapTableModel::onElementStateChanged(long long i)
 void HeapTableModel::onReloaded()
 {
     formatter.update(heap->len);
+    m_rowNumber = formatter.rowNum();
+    emit rowNumberChanged();
+    m_colNumber = formatter.colNum();
+    emit colNumberChanged();
     endResetModel();
     //emit dataChanged(createIndex(0,0),createIndex(formatter.rowNum()-1,formatter.colNum()-1));
     return;

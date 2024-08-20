@@ -56,7 +56,6 @@ Rectangle {
                             }
                         }
     }
-
     Image {
         id: backgroundImage
         visible: mainWindow.state === "home" ? true : false
@@ -212,11 +211,12 @@ Rectangle {
                         }
                     ]
                 }
-
-                Connections {
-                    target: algoScreenButton
-                    onClicked:{
-                        menu.algoScene = true
+                onClicked:{
+                    menu.algoScene = true
+                    heapTable.positionViewAtColumn((heapTable.columns-1)/2,TableView.AlignHCenter)
+                    heapTable.positionViewAtRow(0,TableView.AlignTop)
+                    if(HeapModel.firstClicked){
+                        HeapModel.firstClicked = false
                         HeapModel.pause = true
                         HeapModel.pauseWhenSwapping = false
                         HeapModel.wait()
@@ -314,12 +314,20 @@ Rectangle {
             font.pixelSize: 100
             font.bold: true
             font.weight: Font.Black
-            Connections {
-                target: returnButton
-                onClicked: {
-                    menu.algoScene = false
-                    menu.appScene = false
+            onClicked: {
+                if(menu.algoScene){
+                    if(timer.running){
+                        HeapModel.pause = true
+                        HeapModel.pauseWhenSwapping = true
+                        timer.stop()
+                    }
+                    else{
+                        HeapModel.pause = true
+                        HeapModel.pauseWhenSwapping = false
+                    }
                 }
+                menu.algoScene = false
+                menu.appScene = false
             }
             focus: mainWindow.state === "home" || bluredBackground.visible? false : true
             Keys.onPressed: (event) =>{
@@ -349,11 +357,17 @@ Rectangle {
             font.pixelSize: 70
             font.bold: true
             font.weight: Font.Black
-            Connections {
-                target: questionButton
-                onClicked: {
-                    controlPanel.questionOpen = true
+            onClicked: {
+                if(timer.running){
+                    HeapModel.pause = true
+                    HeapModel.pauseWhenSwapping = true
+                    timer.stop()
                 }
+                else{
+                    HeapModel.pause = true
+                    HeapModel.pauseWhenSwapping = false
+                }
+                controlPanel.questionOpen = true
             }
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Question){
@@ -384,8 +398,16 @@ Rectangle {
             Connections {
                 target: importButton
                 onClicked: {
+                    if(timer.running){
+                        HeapModel.pause = true
+                        HeapModel.pauseWhenSwapping = true
+                        timer.stop()
+                    }
+                    else{
+                        HeapModel.pause = true
+                        HeapModel.pauseWhenSwapping = false
+                    }
                     controlPanel.importOpen=true
-                    mainWindow.pause()
                 }
             }
         }
@@ -407,9 +429,17 @@ Rectangle {
             font.family: "Microsoft YaHei"
             font.bold: true
             onClicked: {
+                if(timer.running){
+                    HeapModel.pause = true
+                    HeapModel.pauseWhenSwapping = true
+                    timer.stop()
+                }
+                else{
+                    HeapModel.pause = true
+                    HeapModel.pauseWhenSwapping = false
+                }
                 controlPanel.exportOpen=true
                 outputBox.text=FileObject.result()
-                mainWindow.pause()
             }
         }
 
@@ -628,13 +658,22 @@ Rectangle {
         columnSpacing: 0
         rowSpacing: 0
         clip: true
-        // rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber<100?100:height/HeapTableModel.rowNumber}
-        // columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber<100?100:width/HeapTableModel.colNumber}
-        rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber}
-        columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber}
+        rowHeightProvider: (row)=>{return height/HeapTableModel.rowNumber<100?100:height/HeapTableModel.rowNumber}
+        columnWidthProvider: (column)=>{return width/HeapTableModel.colNumber<100?100:width/HeapTableModel.colNumber}
+        Component.onCompleted: {
+            var centerColumn = Math.floor((columns-1) / 2); // 中间列索引
+            var visibleColumns = Math.floor(width / columnWidthProvider(centerColumn));
+            var columnToScrollTo = Math.max(0, centerColumn - Math.floor(visibleColumns / 2));
+
+            console.log(height,width,HeapTableModel.rowNumber,HeapTableModel.colNumber)
+
+            //positionViewAtColumn((columns-1)/2,TableView.AlignHCenter)
+            //positionViewAtRow(0,TableView.AlignTop)
+        }
+
         model:HeapTableModel
         delegate: Rectangle {
-
+            id:heapTableBackground
             color:"white"
             Rectangle{
                 border.width: 5

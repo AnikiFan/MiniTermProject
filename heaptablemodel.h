@@ -14,7 +14,7 @@ public:
     /// @brief 属性名
 
     ~HeapTableModel();
-    Q_PROPERTY(long long rowNumber READ rowNumber NOTIFY rowNumberChanged FINAL)
+    Q_PROPERTY(long long rowNumber READ rowNumber  NOTIFY rowNumberChanged FINAL)
     Q_PROPERTY(long long  colNumber READ colNumber NOTIFY colNumberChanged FINAL)
 public:
     virtual int rowCount(const QModelIndex & = QModelIndex()) const override;

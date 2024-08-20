@@ -18,9 +18,9 @@ class HeapModel:public QAbstractItemModel, Heap<Element>
     Q_PROPERTY(bool quit READ quit WRITE setQuit NOTIFY quitChanged FINAL)
     Q_PROPERTY(bool finished READ finished WRITE setFinished NOTIFY finishedChanged FINAL)
     Q_PROPERTY(bool reloading READ reloading WRITE setReloading NOTIFY reloadingChanged FINAL)
+    Q_PROPERTY(bool firstClicked READ firstClicked WRITE setFirstClicked NOTIFY firstClickedChanged FINAL)
 public:
     explicit HeapModel(QObject*parent = nullptr);
-    explicit HeapModel(const char*const,QObject*parent=nullptr);
     ~HeapModel();
     void swap(long long x,long long y) override;
     void sort()override;
@@ -50,6 +50,9 @@ public:
 
     bool reloading() const;
     void setReloading(bool newReloading);
+
+    bool firstClicked() const;
+    void setFirstClicked(bool newFirstClicked);
 
 protected:
     enum RoleNames{
@@ -81,6 +84,8 @@ signals:
     void reloadingChanged();
     void getInputText();
     void beginResetHeapModel();
+    void firstClickedChanged();
+
 private:
     QEventLoop loop;
     Element* raw;
@@ -89,6 +94,7 @@ private:
     bool m_quit=false;
     bool m_finished=false;
     bool m_reloading=false;
+    bool m_firstClicked=true;
 };
 
 #endif // HEAPMODEL_H
